@@ -1,0 +1,161 @@
+package com.example.dreyassist
+
+import android.app.DatePickerDialog
+import android.app.Dialog
+import android.app.TimePickerDialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.os.Bundle
+import android.view.Window
+import android.widget.Button
+import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.dreyassist.data.AppDatabase
+import com.example.dreyassist.data.ReminderEntity
+import com.example.dreyassist.databinding.ActivityReminderListBinding
+import com.example.dreyassist.notification.ReminderScheduler
+import com.example.dreyassist.ui.MainViewModel
+import com.example.dreyassist.ui.MainViewModelFactory
+import com.example.dreyassist.ui.ReminderListAdapter
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+
+class ReminderListActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityReminderListBinding
+    private val database by lazy { AppDatabase.getDatabase(this) }
+    private lateinit var adapter: ReminderListAdapter
+
+    private val viewModel: MainViewModel by viewModels {
+        MainViewModelFactory(database.transaksiDao(), database.journalDao(), database.reminderDao())
+    }
+
+    private val dateTimeFormat = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale("id", "ID"))
+    private var selectedDateTime: Calendar = Calendar.getInstance()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        window.statusBarColor = Color.TRANSPARENT
+
+        binding = ActivityReminderListBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        binding.btnBack.setOnClickListener { finish() }
+        binding.btnAdd.setOnClickListener { showEditDialog(null) }
+
+        adapter = ReminderListAdapter(
+            onEdit = { showEditDialog(it) },
+            onDelete = { showDeleteConfirmation(it) }
+        )
+        binding.recyclerView.adapter = adapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+
+        viewModel.allReminders.observe(this) { list ->
+            adapter.submitList(list)
+        }
+    }
+
+    private fun showEditDialog(reminder: ReminderEntity?) {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_edit_reminder)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.setLayout(
+            (resources.displayMetrics.widthPixels * 0.9).toInt(),
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+
+        val title = dialog.findViewById<TextView>(R.id.dialog_title)
+        val editContent = dialog.findViewById<EditText>(R.id.edit_content)
+        val textDateTime = dialog.findViewById<TextView>(R.id.text_datetime)
+        val btnPickDateTime = dialog.findViewById<Button>(R.id.btn_pick_datetime)
+
+        selectedDateTime = Calendar.getInstance()
+
+        if (reminder != null) {
+            title.text = "Edit Pengingat"
+            editContent.setText(reminder.content)
+            selectedDateTime.timeInMillis = reminder.reminderTime
+        } else {
+            title.text = "Tambah Pengingat"
+            selectedDateTime.add(Calendar.HOUR_OF_DAY, 1)
+        }
+
+        textDateTime.text = dateTimeFormat.format(Date(selectedDateTime.timeInMillis))
+
+        btnPickDateTime.setOnClickListener {
+            DatePickerDialog(this, { _, year, month, day ->
+                selectedDateTime.set(Calendar.YEAR, year)
+                selectedDateTime.set(Calendar.MONTH, month)
+                selectedDateTime.set(Calendar.DAY_OF_MONTH, day)
+                
+                TimePickerDialog(this, { _, hour, minute ->
+                    selectedDateTime.set(Calendar.HOUR_OF_DAY, hour)
+                    selectedDateTime.set(Calendar.MINUTE, minute)
+                    textDateTime.text = dateTimeFormat.format(Date(selectedDateTime.timeInMillis))
+                }, selectedDateTime.get(Calendar.HOUR_OF_DAY), selectedDateTime.get(Calendar.MINUTE), true).show()
+                
+            }, selectedDateTime.get(Calendar.YEAR), selectedDateTime.get(Calendar.MONTH), selectedDateTime.get(Calendar.DAY_OF_MONTH)).show()
+        }
+
+        dialog.findViewById<Button>(R.id.btn_cancel).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.findViewById<Button>(R.id.btn_save).setOnClickListener {
+            val content = editContent.text.toString().trim()
+
+            if (content.isEmpty()) {
+                Toast.makeText(this, "Isi pengingat harus diisi", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (reminder != null) {
+                val updated = reminder.copy(
+                    content = content,
+                    reminderTime = selectedDateTime.timeInMillis
+                )
+                viewModel.updateReminder(updated)
+                ReminderScheduler.cancelReminder(this, reminder.id)
+                ReminderScheduler.scheduleReminder(this, reminder.id, content, selectedDateTime.timeInMillis)
+                Toast.makeText(this, "Pengingat diperbarui", Toast.LENGTH_SHORT).show()
+            } else {
+                val newReminder = ReminderEntity(
+                    content = content,
+                    reminderTime = selectedDateTime.timeInMillis
+                )
+                viewModel.insertReminder(newReminder) { id ->
+                    ReminderScheduler.scheduleReminder(this, id.toInt(), content, selectedDateTime.timeInMillis)
+                }
+                Toast.makeText(this, "Pengingat ditambahkan", Toast.LENGTH_SHORT).show()
+            }
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    private fun showDeleteConfirmation(reminder: ReminderEntity) {
+        AlertDialog.Builder(this)
+            .setTitle("Hapus Pengingat")
+            .setMessage("Yakin ingin menghapus pengingat ini?")
+            .setPositiveButton("Hapus") { _, _ ->
+                ReminderScheduler.cancelReminder(this, reminder.id)
+                viewModel.deleteReminder(reminder)
+                Toast.makeText(this, "Pengingat dihapus", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("Batal", null)
+            .show()
+    }
+}

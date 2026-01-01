@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Night Sky Theme -->
+    <color name="night_sky_dark">#0A0E1A</color>
+    <color name="night_sky_mid">#0D1321</color>
+    <color name="night_sky_light">#121826</color>
+    
+    <!-- Accent Colors -->
+    <color name="accent_cyan">#00D4FF</color>
+    <color name="accent_cyan_dim">#0099CC</color>
+    <color name="accent_glow">#004D66</color>
+    
+    <!-- Glass Effect Colors -->
+    <color name="glass_white">#1AFFFFFF</color>
+    <color name="glass_stroke">#33FFFFFF</color>
+    <color name="glass_card">#1A1E2D</color>
+    <color name="glass_input">#0DFFFFFF</color>
+    
+    <!-- Text Colors -->
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#B0B8C9</color>
+    <color name="text_hint">#5A6380</color>
+    
+    <!-- Standard -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+</resources>

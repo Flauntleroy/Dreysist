@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Soft outer glow -->
+    <item>
+        <shape android:shape="oval">
+            <gradient
+                android:type="radial"
+                android:gradientRadius="70dp"
+                android:startColor="#2000D4FF"
+                android:endColor="#00000000" />
+            <size android:width="140dp" android:height="140dp" />
+        </shape>
+    </item>
+    <!-- Glass container -->
+    <item
+        android:left="10dp"
+        android:top="10dp"
+        android:right="10dp"
+        android:bottom="10dp">
+        <shape android:shape="oval">
+            <gradient
+                android:type="linear"
+                android:angle="135"
+                android:startColor="#25FFFFFF"
+                android:centerColor="#10FFFFFF"
+                android:endColor="#08FFFFFF" />
+            <stroke
+                android:width="1dp"
+                android:color="#30FFFFFF" />
+        </shape>
+    </item>
+</layer-list>
