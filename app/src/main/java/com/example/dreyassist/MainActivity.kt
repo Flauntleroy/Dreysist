@@ -40,7 +40,11 @@ import com.example.dreyassist.ui.ItemType
 import com.example.dreyassist.ui.MainViewModel
 import com.example.dreyassist.ui.MainViewModelFactory
 import com.example.dreyassist.util.Category
+import com.example.dreyassist.util.QueryHandler
 import com.example.dreyassist.util.VoiceParser
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -76,6 +80,11 @@ class MainActivity : AppCompatActivity() {
     
     private val mainViewModel: MainViewModel by viewModels {
         MainViewModelFactory(database.transaksiDao(), database.journalDao(), database.reminderDao(), database.memoryDao())
+    }
+    
+    // QueryHandler for REMEMBER feature
+    private val queryHandler by lazy {
+        QueryHandler(database.transaksiDao(), database.journalDao(), database.reminderDao(), database.memoryDao())
     }
 
     // Data holders for combining
@@ -423,6 +432,7 @@ class MainActivity : AppCompatActivity() {
                             parsedResult.reminderTime
                         )
                         Category.MEMORY -> showMemoryPreviewDialog(parsedResult.keperluan)
+                        Category.QUERY -> handleQuery(parsedResult.keperluan)
                     }
                 }
             }
@@ -491,6 +501,37 @@ class MainActivity : AppCompatActivity() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun handleQuery(queryText: String) {
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                val result = queryHandler.processQuery(queryText)
+                showQueryAnswerDialog(queryText, result.answer)
+            } catch (e: Exception) {
+                showQueryAnswerDialog(queryText, "Maaf, terjadi error: ${e.message}")
+            }
+        }
+    }
+
+    private fun showQueryAnswerDialog(question: String, answer: String) {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_query_answer)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.setLayout(
+            (resources.displayMetrics.widthPixels * 0.9).toInt(),
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+
+        dialog.findViewById<TextView>(R.id.text_question).text = "\"$question\""
+        dialog.findViewById<TextView>(R.id.text_answer).text = answer
+
+        dialog.findViewById<Button>(R.id.btn_ok).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
     private fun showTransactionPreviewDialog(keperluan: String, total: Int, keterangan: String, transactionDate: Long = System.currentTimeMillis()) {

@@ -27,6 +27,9 @@ interface MemoryDao {
     @Query("SELECT * FROM memory WHERE content LIKE '%' || :query || '%' ORDER BY createdAt DESC")
     fun search(query: String): Flow<List<MemoryEntity>>
 
+    @Query("SELECT * FROM memory WHERE content LIKE :query ORDER BY createdAt DESC")
+    suspend fun searchList(query: String): List<MemoryEntity>
+
     @Query("SELECT * FROM memory WHERE category = :category ORDER BY createdAt DESC")
     fun getByCategory(category: String): Flow<List<MemoryEntity>>
 }

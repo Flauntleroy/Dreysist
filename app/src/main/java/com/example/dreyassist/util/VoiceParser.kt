@@ -7,7 +7,8 @@ enum class Category {
     TRANSAKSI,
     JURNAL,
     PENGINGAT,
-    MEMORY
+    MEMORY,
+    QUERY  // For REMEMBER feature - asking questions
 }
 
 object VoiceParser {
@@ -351,8 +352,64 @@ object VoiceParser {
     private val totalKeywords = listOf("total", "seharga", "senilai", "harga", "sebesar", "nominal")
     private val keteranganKeywords = listOf("rincian", "keterangan", "detail", "isi", "untuk", "yaitu", "berupa")
 
+    // ============================================================
+    // QUERY KEYWORDS - For REMEMBER feature (asking questions)
+    // ============================================================
+    private val queryKeywords = listOf(
+        // === PERTANYAAN UMUM ===
+        "berapa", "berapa banyak", "berapa kali", "berapa total",
+        "apa", "apa saja", "apa itu", "apakah",
+        "kapan", "kapan terakhir", "kapan pertama",
+        "dimana", "di mana", "where",
+        "siapa", "who",
+        "bagaimana", "gimana", "how",
+        "mengapa", "kenapa", "why",
+        
+        // === PERTANYAAN SPENDING ===
+        "total pengeluaran", "total spending", "total belanja",
+        "pengeluaran hari ini", "spending today",
+        "pengeluaran minggu ini", "pengeluaran bulan ini",
+        "sudah habis berapa", "sudah keluar berapa",
+        "uang keluar", "money out",
+        "termahal", "paling mahal", "most expensive",
+        "paling sering beli", "most frequent",
+        "rata-rata pengeluaran", "average spending",
+        
+        // === PERTANYAAN TRANSAKSI ===
+        "transaksi terakhir", "last transaction",
+        "beli apa", "beli terakhir", "terakhir beli",
+        "bayar apa", "bayar terakhir",
+        "pernah beli", "sudah pernah",
+        "ada transaksi", "cari transaksi",
+        
+        // === PERTANYAAN JURNAL ===
+        "jurnal terakhir", "catatan terakhir",
+        "kemarin ngapain", "tadi ngapain", "hari ini ngapain",
+        "ada berapa jurnal", "berapa jurnal",
+        "kegiatan terakhir", "aktivitas terakhir",
+        "cari jurnal", "cari kegiatan",
+        
+        // === PERTANYAAN REMINDER ===
+        "pengingat aktif", "reminder aktif",
+        "ada pengingat", "pengingat apa",
+        "berapa pengingat", "how many reminders",
+        "jadwal hari ini", "schedule today",
+        
+        // === PERTANYAAN CATATAN ===
+        "password apa", "pin apa",
+        "alamatnya apa", "emailnya apa",
+        "cari catatan", "search notes",
+        "ada catatan", "catatan tentang"
+    )
+
     fun parse(text: String): ParsedResult {
         val lowercasedText = text.lowercase(Locale.ROOT)
+        
+        // Check for query (REMEMBER feature) first - has highest priority
+        val queryScore = calculateQueryScore(lowercasedText)
+        if (queryScore >= 3) {
+            return parseAsQuery(text, lowercasedText)
+        }
         
         // Calculate confidence scores for each category
         val reminderScore = calculateScore(lowercasedText, reminderKeywords, reminderExclusions)
@@ -384,6 +441,35 @@ object VoiceParser {
             category == Category.MEMORY -> parseAsMemory(text, lowercasedText)
             else -> parseTransaction(text, lowercasedText)
         }
+    }
+    
+    private fun calculateQueryScore(text: String): Int {
+        var score = 0
+        for (keyword in queryKeywords) {
+            if (text.contains(keyword)) {
+                score += when {
+                    keyword.length >= 15 -> 5
+                    keyword.length >= 10 -> 4
+                    keyword.length >= 6 -> 3
+                    else -> 2
+                }
+            }
+            if (text.startsWith(keyword)) {
+                score += 3 // Bonus for starting with question word
+            }
+        }
+        return score
+    }
+    
+    private fun parseAsQuery(originalText: String, lowercasedText: String): ParsedResult {
+        // Return the query text for processing by QueryHandler
+        return ParsedResult(
+            category = Category.QUERY,
+            keperluan = originalText, // Store the full query
+            total = 0,
+            keterangan = "",
+            reminderTime = 0
+        )
     }
     
     private fun calculateScore(text: String, keywords: List<String>, exclusions: List<String>): Int {

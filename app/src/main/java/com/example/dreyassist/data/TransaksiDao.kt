@@ -48,9 +48,13 @@ interface TransaksiDao {
     @Query("SELECT * FROM transaksi ORDER BY tanggal DESC LIMIT 1")
     suspend fun getLatest(): TransaksiEntity?
     
-    // Transaksi dengan keperluan tertentu (pencarian)
+    // Transaksi dengan keperluan tertentu (pencarian) - Flow
     @Query("SELECT * FROM transaksi WHERE keperluan LIKE '%' || :query || '%' ORDER BY tanggal DESC")
     fun searchByKeperluan(query: String): Flow<List<TransaksiEntity>>
+    
+    // Transaksi dengan keperluan tertentu (pencarian) - Suspend for QueryHandler
+    @Query("SELECT * FROM transaksi WHERE keperluan LIKE :query ORDER BY tanggal DESC")
+    suspend fun searchByKeperluanList(query: String): List<TransaksiEntity>
     
     // Jumlah transaksi
     @Query("SELECT COUNT(*) FROM transaksi")

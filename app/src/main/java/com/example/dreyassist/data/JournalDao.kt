@@ -47,5 +47,12 @@ interface JournalDao {
     // Jurnal dalam rentang waktu
     @Query("SELECT * FROM journal WHERE tanggal >= :startTime AND tanggal <= :endTime ORDER BY tanggal DESC")
     fun getJournalsBetween(startTime: Long, endTime: Long): Flow<List<JournalEntity>>
+    
+    // Suspend versions for QueryHandler
+    @Query("SELECT * FROM journal WHERE kegiatan LIKE :query ORDER BY tanggal DESC")
+    suspend fun searchByKegiatanList(query: String): List<JournalEntity>
+    
+    @Query("SELECT * FROM journal WHERE tanggal >= :startTime ORDER BY tanggal DESC")
+    suspend fun getJournalsSince(startTime: Long): List<JournalEntity>
 }
 

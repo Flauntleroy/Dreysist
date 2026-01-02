@@ -123,7 +123,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="• &quot;jurnal hari ini meeting dengan client&quot;\n• &quot;jurnal kerja lembur sampai malam&quot;\n• &quot;catat kegiatan presentasi project&quot;"
+                    android:text="• &quot;jurnal hari ini meeting dengan client&quot;\n• &quot;curhat aku hari ini capek banget&quot;\n• &quot;catat kegiatan presentasi project&quot;"
                     android:textColor="@color/text_secondary"
                     android:textSize="13sp"
                     android:lineSpacingMultiplier="1.4"
@@ -142,7 +142,121 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="• &quot;ingatkan meeting jam 3 sore&quot;\n• &quot;pengingat bayar tagihan jam 10.30&quot;\n• &quot;reminder ambil laundry jam 17:00&quot;"
+                    android:text="• &quot;ingatkan meeting jam 3 sore&quot;\n• &quot;pengingat bayar tagihan jam 10.30&quot;\n• &quot;reminder ambil laundry besok jam 9 pagi&quot;"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp"
+                    android:lineSpacingMultiplier="1.4"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Notes -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="NOTES"
+                    android:textColor="#00D4FF"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="• &quot;simpan password instagram abc123&quot;\n• &quot;ingat pin ATM 123456&quot;\n• &quot;catat email baru john@email.com&quot;"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp"
+                    android:lineSpacingMultiplier="1.4" />
+
+            </LinearLayout>
+
+            <!-- REMEMBER (Query) Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_glass_card"
+                android:padding="20dp"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Ask Questions (REMEMBER)"
+                    android:textColor="@color/accent_cyan"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Pengeluaran -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SPENDING"
+                    android:textColor="#00D4FF"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="• &quot;berapa total pengeluaran?&quot;\n• &quot;pengeluaran hari ini berapa?&quot;\n• &quot;pengeluaran bulan ini berapa?&quot;\n• &quot;transaksi terakhir apa?&quot;\n• &quot;transaksi termahal apa?&quot;"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp"
+                    android:lineSpacingMultiplier="1.4"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Jurnal -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="JOURNAL"
+                    android:textColor="#00D4FF"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="• &quot;jurnal terakhir apa?&quot;\n• &quot;hari ini ngapain aja?&quot;\n• &quot;ada berapa jurnal?&quot;"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp"
+                    android:lineSpacingMultiplier="1.4"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Reminder -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="REMINDER"
+                    android:textColor="#00D4FF"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="• &quot;ada pengingat aktif?&quot;\n• &quot;berapa pengingat yang aktif?&quot;"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp"
+                    android:lineSpacingMultiplier="1.4"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Pencarian -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SEARCH"
+                    android:textColor="#00D4FF"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="• &quot;pernah beli kopi?&quot;\n• &quot;cari transaksi makan&quot;\n• &quot;cari catatan password&quot;\n• &quot;cari jurnal meeting&quot;"
                     android:textColor="@color/text_secondary"
                     android:textSize="13sp"
                     android:lineSpacingMultiplier="1.4" />
@@ -169,7 +283,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Transaksi: beli, bayar, buat, order, pesan\n\nJurnal: jurnal, catat, kegiatan, aktivitas\n\nPengingat: ingatkan, pengingat, reminder, alarm\n\nTanggal: tanggal [dd] [bulan] [tahun]\n\nWaktu: jam [hh:mm], jam [hh] [pagi/sore/malam]"
+                    android:text="Transaction: beli, bayar, belanja, jajan, ngopi\n\nJournal: jurnal, curhat, hari ini aku, catat kegiatan\n\nReminder: ingatkan, pengingat, reminder, jangan lupa\n\nNotes: simpan, ingat ini, catat ini, password, pin\n\nQuestions: berapa, apa, kapan, cari, ada"
                     android:textColor="@color/text_secondary"
                     android:textSize="13sp"
                     android:lineSpacingMultiplier="1.4" />
