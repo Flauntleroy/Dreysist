@@ -245,6 +245,40 @@
 
         </LinearLayout>
 
+        <!-- Notes -->
+        <LinearLayout
+            android:id="@+id/fab_catatan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical|end"
+            android:layout_marginBottom="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Notes"
+                android:textColor="#B0B8C9"
+                android:textSize="14sp"
+                android:background="@drawable/bg_fab_label"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp"
+                android:layout_marginEnd="12dp" />
+
+            <FrameLayout
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_fab_mini">
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_journal"
+                    android:contentDescription="Notes" />
+            </FrameLayout>
+
+        </LinearLayout>
+
         <!-- Reminder -->
         <LinearLayout
             android:id="@+id/fab_pengingat"
@@ -258,7 +292,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Reminder"
-                android:textColor="#FF6B6B"
+                android:textColor="#B0B8C9"
                 android:textSize="14sp"
                 android:background="@drawable/bg_fab_label"
                 android:paddingHorizontal="16dp"
@@ -268,12 +302,12 @@
             <FrameLayout
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:background="@drawable/bg_fab_reminder">
+                android:background="@drawable/bg_fab_mini">
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_notification"
+                    android:src="@drawable/ic_clock"
                     android:contentDescription="Reminder" />
             </FrameLayout>
 
@@ -292,7 +326,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Journal"
-                android:textColor="#FFD93D"
+                android:textColor="#B0B8C9"
                 android:textSize="14sp"
                 android:background="@drawable/bg_fab_label"
                 android:paddingHorizontal="16dp"
@@ -302,7 +336,7 @@
             <FrameLayout
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:background="@drawable/bg_fab_journal">
+                android:background="@drawable/bg_fab_mini">
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
@@ -325,7 +359,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Transaction"
-                android:textColor="#00D4FF"
+                android:textColor="#B0B8C9"
                 android:textSize="14sp"
                 android:background="@drawable/bg_fab_label"
                 android:paddingHorizontal="16dp"
@@ -335,7 +369,7 @@
             <FrameLayout
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:background="@drawable/bg_fab_transaksi">
+                android:background="@drawable/bg_fab_mini">
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"

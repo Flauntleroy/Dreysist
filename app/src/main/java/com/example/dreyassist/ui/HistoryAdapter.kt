@@ -34,6 +34,7 @@ class HistoryAdapter : ListAdapter<HistoryItem, HistoryAdapter.HistoryViewHolder
                 ItemType.TRANSAKSI -> "T"
                 ItemType.JURNAL -> "J"
                 ItemType.PENGINGAT -> "P"
+                ItemType.MEMORY -> "M"
             }
             textTitle.text = item.title
             textSubtitle.text = item.subtitle

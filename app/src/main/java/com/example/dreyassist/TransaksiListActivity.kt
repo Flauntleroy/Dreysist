@@ -34,7 +34,7 @@ class TransaksiListActivity : AppCompatActivity() {
     private lateinit var adapter: TransaksiListAdapter
 
     private val viewModel: MainViewModel by viewModels {
-        MainViewModelFactory(database.transaksiDao(), database.journalDao(), database.reminderDao())
+        MainViewModelFactory(database.transaksiDao(), database.journalDao(), database.reminderDao(), database.memoryDao())
     }
 
     private val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale("id", "ID"))

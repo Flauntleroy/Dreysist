@@ -7,6 +7,8 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.dreyassist.data.JournalDao
 import com.example.dreyassist.data.JournalEntity
+import com.example.dreyassist.data.MemoryDao
+import com.example.dreyassist.data.MemoryEntity
 import com.example.dreyassist.data.ReminderDao
 import com.example.dreyassist.data.ReminderEntity
 import com.example.dreyassist.data.TransaksiDao
@@ -16,13 +18,15 @@ import kotlinx.coroutines.launch
 class MainViewModel(
     private val transaksiDao: TransaksiDao,
     private val journalDao: JournalDao,
-    private val reminderDao: ReminderDao
+    private val reminderDao: ReminderDao,
+    private val memoryDao: MemoryDao
 ) : ViewModel() {
 
     val allTransaksi: LiveData<List<TransaksiEntity>> = transaksiDao.getAll().asLiveData()
     val allJournal: LiveData<List<JournalEntity>> = journalDao.getAll().asLiveData()
     val allReminders: LiveData<List<ReminderEntity>> = reminderDao.getAll().asLiveData()
     val activeReminders: LiveData<List<ReminderEntity>> = reminderDao.getActive().asLiveData()
+    val allMemories: LiveData<List<MemoryEntity>> = memoryDao.getAll().asLiveData()
 
     // Transaksi CRUD
     fun insertTransaksi(transaksi: TransaksiEntity) = viewModelScope.launch {
@@ -63,17 +67,31 @@ class MainViewModel(
     fun deleteReminder(reminder: ReminderEntity) = viewModelScope.launch {
         reminderDao.delete(reminder)
     }
+    
+    // Memory CRUD
+    fun insertMemory(memory: MemoryEntity) = viewModelScope.launch {
+        memoryDao.insert(memory)
+    }
+
+    fun updateMemory(memory: MemoryEntity) = viewModelScope.launch {
+        memoryDao.update(memory)
+    }
+
+    fun deleteMemory(memory: MemoryEntity) = viewModelScope.launch {
+        memoryDao.delete(memory)
+    }
 }
 
 class MainViewModelFactory(
     private val transaksiDao: TransaksiDao,
     private val journalDao: JournalDao,
-    private val reminderDao: ReminderDao
+    private val reminderDao: ReminderDao,
+    private val memoryDao: MemoryDao
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return MainViewModel(transaksiDao, journalDao, reminderDao) as T
+            return MainViewModel(transaksiDao, journalDao, reminderDao, memoryDao) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

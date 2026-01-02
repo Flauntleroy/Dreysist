@@ -49,6 +49,11 @@
             android:theme="@style/Theme.DreyAssist" />
 
         <activity
+            android:name=".MemoryListActivity"
+            android:exported="false"
+            android:theme="@style/Theme.DreyAssist" />
+
+        <activity
             android:name=".AboutActivity"
             android:exported="false"
             android:theme="@style/Theme.DreyAssist" />

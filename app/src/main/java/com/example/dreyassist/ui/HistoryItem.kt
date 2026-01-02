@@ -1,13 +1,15 @@
 package com.example.dreyassist.ui
 
 import com.example.dreyassist.data.JournalEntity
+import com.example.dreyassist.data.MemoryEntity
 import com.example.dreyassist.data.ReminderEntity
 import com.example.dreyassist.data.TransaksiEntity
 
 enum class ItemType {
     TRANSAKSI,
     JURNAL,
-    PENGINGAT
+    PENGINGAT,
+    MEMORY
 }
 
 data class HistoryItem(
@@ -46,6 +48,17 @@ data class HistoryItem(
                 title = reminder.content,
                 subtitle = "Pengingat - $status",
                 timestamp = reminder.reminderTime
+            )
+        }
+
+        fun fromMemory(memory: MemoryEntity): HistoryItem {
+            val categoryLabel = if (memory.category.isNotBlank()) memory.category else "Catatan"
+            return HistoryItem(
+                id = memory.id,
+                type = ItemType.MEMORY,
+                title = memory.content,
+                subtitle = categoryLabel,
+                timestamp = memory.createdAt
             )
         }
     }

@@ -8,6 +8,7 @@ import androidx.core.view.WindowCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dreyassist.data.AppDatabase
 import com.example.dreyassist.data.JournalEntity
+import com.example.dreyassist.data.MemoryEntity
 import com.example.dreyassist.data.ReminderEntity
 import com.example.dreyassist.data.TransaksiEntity
 import com.example.dreyassist.databinding.ActivityHistoryBinding
@@ -26,9 +27,10 @@ class HistoryActivity : AppCompatActivity() {
     private var currentTransaksi: List<TransaksiEntity> = emptyList()
     private var currentJournals: List<JournalEntity> = emptyList()
     private var currentReminders: List<ReminderEntity> = emptyList()
+    private var currentMemories: List<MemoryEntity> = emptyList()
 
     private val mainViewModel: MainViewModel by viewModels {
-        MainViewModelFactory(database.transaksiDao(), database.journalDao(), database.reminderDao())
+        MainViewModelFactory(database.transaksiDao(), database.journalDao(), database.reminderDao(), database.memoryDao())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,6 +68,11 @@ class HistoryActivity : AppCompatActivity() {
             currentReminders = reminders ?: emptyList()
             updateHistoryList()
         }
+        
+        mainViewModel.allMemories.observe(this) { memories ->
+            currentMemories = memories ?: emptyList()
+            updateHistoryList()
+        }
     }
 
     private fun updateHistoryList() {
@@ -73,6 +80,7 @@ class HistoryActivity : AppCompatActivity() {
         currentTransaksi.forEach { allItems.add(HistoryItem.fromTransaksi(it)) }
         currentJournals.forEach { allItems.add(HistoryItem.fromJournal(it)) }
         currentReminders.forEach { allItems.add(HistoryItem.fromReminder(it)) }
+        currentMemories.forEach { allItems.add(HistoryItem.fromMemory(it)) }
         
         val sortedItems = allItems.sortedByDescending { it.timestamp }
         
@@ -86,3 +94,4 @@ class HistoryActivity : AppCompatActivity() {
         }
     }
 }
+

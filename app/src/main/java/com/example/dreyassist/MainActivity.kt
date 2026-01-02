@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
@@ -28,6 +29,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import com.example.dreyassist.data.AppDatabase
 import com.example.dreyassist.data.JournalEntity
+import com.example.dreyassist.data.MemoryEntity
 import com.example.dreyassist.data.ReminderEntity
 import com.example.dreyassist.data.TransaksiEntity
 import com.example.dreyassist.databinding.ActivityMainBinding
@@ -58,6 +60,10 @@ class MainActivity : AppCompatActivity() {
     private var mediaPlayer: MediaPlayer? = null
     
     private var isFabOpen = false
+    
+    // Audio manager for silent mode during voice input
+    private lateinit var audioManager: AudioManager
+    private var previousRingerMode: Int = AudioManager.RINGER_MODE_NORMAL
 
     private val currencyFormat = NumberFormat.getCurrencyInstance(Locale("id", "ID")).apply {
         maximumFractionDigits = 0
@@ -69,13 +75,14 @@ class MainActivity : AppCompatActivity() {
     private val database by lazy { AppDatabase.getDatabase(this) }
     
     private val mainViewModel: MainViewModel by viewModels {
-        MainViewModelFactory(database.transaksiDao(), database.journalDao(), database.reminderDao())
+        MainViewModelFactory(database.transaksiDao(), database.journalDao(), database.reminderDao(), database.memoryDao())
     }
 
     // Data holders for combining
     private var currentTransaksi: List<TransaksiEntity> = emptyList()
     private var currentJournals: List<JournalEntity> = emptyList()
     private var currentReminders: List<ReminderEntity> = emptyList()
+    private var currentMemories: List<MemoryEntity> = emptyList()
 
     private val requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
         if (isGranted) {
@@ -162,6 +169,11 @@ class MainActivity : AppCompatActivity() {
             closeFabMenu()
             startActivity(Intent(this, AboutActivity::class.java))
         }
+
+        binding.fabCatatan.setOnClickListener {
+            closeFabMenu()
+            startActivity(Intent(this, MemoryListActivity::class.java))
+        }
     }
 
     private fun toggleFabMenu() {
@@ -190,6 +202,7 @@ class MainActivity : AppCompatActivity() {
             binding.fabTransaksi,
             binding.fabJurnal,
             binding.fabPengingat,
+            binding.fabCatatan,
             binding.fabBackup,
             binding.fabAbout
         )
@@ -216,6 +229,7 @@ class MainActivity : AppCompatActivity() {
         val menuItems = listOf(
             binding.fabAbout,
             binding.fabBackup,
+            binding.fabCatatan,
             binding.fabPengingat,
             binding.fabJurnal,
             binding.fabTransaksi
@@ -292,6 +306,11 @@ class MainActivity : AppCompatActivity() {
             currentReminders = reminders ?: emptyList()
             updateRecentView()
         }
+        
+        mainViewModel.allMemories.observe(this) { memories ->
+            currentMemories = memories ?: emptyList()
+            updateRecentView()
+        }
     }
 
     private fun updateRecentView() {
@@ -302,6 +321,7 @@ class MainActivity : AppCompatActivity() {
         currentTransaksi.forEach { allItems.add(HistoryItem.fromTransaksi(it)) }
         currentJournals.forEach { allItems.add(HistoryItem.fromJournal(it)) }
         currentReminders.forEach { allItems.add(HistoryItem.fromReminder(it)) }
+        currentMemories.forEach { allItems.add(HistoryItem.fromMemory(it)) }
         
         // Sort by timestamp descending and take 3
         val recentItems = allItems.sortedByDescending { it.timestamp }.take(3)
@@ -319,6 +339,7 @@ class MainActivity : AppCompatActivity() {
                     ItemType.TRANSAKSI -> "T"
                     ItemType.JURNAL -> "J"
                     ItemType.PENGINGAT -> "P"
+                    ItemType.MEMORY -> "M"
                 }
                 
                 itemView.findViewById<TextView>(R.id.text_type).text = typeText
@@ -364,6 +385,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onError(error: Int) {
                 isRecording = false
+                restoreRingerMode() // Restore ringer mode
                 binding.voiceButton.clearAnimation()
                 startIdleAnimations()
                 binding.textStatus.text = "Tap the button to start"
@@ -378,6 +400,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onResults(results: Bundle?) {
                 isRecording = false
+                restoreRingerMode() // Restore ringer mode
                 binding.voiceButton.clearAnimation()
                 startIdleAnimations()
                 binding.textStatus.text = "Tap the button to start"
@@ -399,6 +422,7 @@ class MainActivity : AppCompatActivity() {
                             parsedResult.keperluan,
                             parsedResult.reminderTime
                         )
+                        Category.MEMORY -> showMemoryPreviewDialog(parsedResult.keperluan)
                     }
                 }
             }
@@ -409,6 +433,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startVoiceInput() {
+        // Initialize audio manager if not done
+        if (!::audioManager.isInitialized) {
+            audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
+        }
+        
+        // Enable silent mode during voice input
+        enableSilentMode()
+        
         // Release previous instance if any
         mediaPlayer?.release()
         
@@ -428,6 +460,37 @@ class MainActivity : AppCompatActivity() {
         // Disable default beep sound
         intent.putExtra("android.speech.extra.BEEP", false)
         speechRecognizer.startListening(intent)
+    }
+    
+    private fun enableSilentMode() {
+        try {
+            if (!::audioManager.isInitialized) {
+                audioManager = getSystemService(AUDIO_SERVICE) as AudioManager
+            }
+            
+            // Save current volumes
+            previousRingerMode = audioManager.getStreamVolume(AudioManager.STREAM_RING)
+            
+            // Mute notification and ring streams (works without DND permission)
+            audioManager.adjustStreamVolume(AudioManager.STREAM_NOTIFICATION, AudioManager.ADJUST_MUTE, 0)
+            audioManager.adjustStreamVolume(AudioManager.STREAM_RING, AudioManager.ADJUST_MUTE, 0)
+            audioManager.adjustStreamVolume(AudioManager.STREAM_SYSTEM, AudioManager.ADJUST_MUTE, 0)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+    
+    private fun restoreRingerMode() {
+        try {
+            if (!::audioManager.isInitialized) return
+            
+            // Unmute streams
+            audioManager.adjustStreamVolume(AudioManager.STREAM_NOTIFICATION, AudioManager.ADJUST_UNMUTE, 0)
+            audioManager.adjustStreamVolume(AudioManager.STREAM_RING, AudioManager.ADJUST_UNMUTE, 0)
+            audioManager.adjustStreamVolume(AudioManager.STREAM_SYSTEM, AudioManager.ADJUST_UNMUTE, 0)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private fun showTransactionPreviewDialog(keperluan: String, total: Int, keterangan: String, transactionDate: Long = System.currentTimeMillis()) {
@@ -541,6 +604,39 @@ class MainActivity : AppCompatActivity() {
                 dialog.dismiss()
             } else {
                 Toast.makeText(this, "Pengingat tidak boleh kosong", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        dialog.show()
+    }
+
+    private fun showMemoryPreviewDialog(content: String) {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_preview_memory)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.setLayout(
+            (resources.displayMetrics.widthPixels * 0.9).toInt(),
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+
+        dialog.findViewById<TextView>(R.id.text_content).text = 
+            if (content.isNotBlank()) content else "-"
+
+        dialog.findViewById<Button>(R.id.btn_cancel).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.findViewById<Button>(R.id.btn_save).setOnClickListener {
+            if (content.isNotBlank()) {
+                val memory = MemoryEntity(
+                    content = content
+                )
+                mainViewModel.insertMemory(memory)
+                Toast.makeText(this, "Catatan disimpan!", Toast.LENGTH_SHORT).show()
+                dialog.dismiss()
+            } else {
+                Toast.makeText(this, "Catatan tidak boleh kosong", Toast.LENGTH_SHORT).show()
             }
         }
 

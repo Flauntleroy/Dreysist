@@ -36,7 +36,7 @@ class ReminderListActivity : AppCompatActivity() {
     private lateinit var adapter: ReminderListAdapter
 
     private val viewModel: MainViewModel by viewModels {
-        MainViewModelFactory(database.transaksiDao(), database.journalDao(), database.reminderDao())
+        MainViewModelFactory(database.transaksiDao(), database.journalDao(), database.reminderDao(), database.memoryDao())
     }
 
     private val dateTimeFormat = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale("id", "ID"))
