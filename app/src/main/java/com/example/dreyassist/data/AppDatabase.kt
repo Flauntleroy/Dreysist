@@ -9,7 +9,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 
 @Database(
     entities = [TransaksiEntity::class, JournalEntity::class, ReminderEntity::class, MemoryEntity::class],
-    version = 4,
+    version = 5,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -35,7 +35,6 @@ abstract class AppDatabase : RoomDatabase() {
         // Migration from version 2 to 3
         private val MIGRATION_2_3 = object : Migration(2, 3) {
             override fun migrate(database: SupportSQLiteDatabase) {
-                // Create reminder table if it doesn't exist
                 database.execSQL("""
                     CREATE TABLE IF NOT EXISTS reminder (
                         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -51,6 +50,45 @@ abstract class AppDatabase : RoomDatabase() {
         // Migration from version 3 to 4
         private val MIGRATION_3_4 = object : Migration(3, 4) {
             override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("""
+                    CREATE TABLE IF NOT EXISTS memory (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        content TEXT NOT NULL,
+                        category TEXT NOT NULL DEFAULT '',
+                        createdAt INTEGER NOT NULL
+                    )
+                """.trimIndent())
+            }
+        }
+
+        // Migration from version 4 to 5 - Add category to transaksi, recurrence to reminder
+        private val MIGRATION_4_5 = object : Migration(4, 5) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                // Add category column to transaksi
+                database.execSQL("ALTER TABLE transaksi ADD COLUMN category TEXT NOT NULL DEFAULT 'OTHER'")
+                // Add recurrence columns to reminder
+                database.execSQL("ALTER TABLE reminder ADD COLUMN recurrenceType TEXT NOT NULL DEFAULT 'NONE'")
+                database.execSQL("ALTER TABLE reminder ADD COLUMN recurrenceInterval INTEGER NOT NULL DEFAULT 1")
+            }
+        }
+
+        // Migration from version 1 to 5 (full migration)
+        private val MIGRATION_1_5 = object : Migration(1, 5) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                // Add category to transaksi
+                database.execSQL("ALTER TABLE transaksi ADD COLUMN category TEXT NOT NULL DEFAULT 'OTHER'")
+                // Create reminder table with all fields
+                database.execSQL("""
+                    CREATE TABLE IF NOT EXISTS reminder (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                        content TEXT NOT NULL,
+                        reminderTime INTEGER NOT NULL,
+                        createdAt INTEGER NOT NULL,
+                        isCompleted INTEGER NOT NULL DEFAULT 0,
+                        recurrenceType TEXT NOT NULL DEFAULT 'NONE',
+                        recurrenceInterval INTEGER NOT NULL DEFAULT 1
+                    )
+                """.trimIndent())
                 // Create memory table
                 database.execSQL("""
                     CREATE TABLE IF NOT EXISTS memory (
@@ -63,20 +101,21 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
-        // Migration from version 1 to 4 (skip intermediate)
-        private val MIGRATION_1_4 = object : Migration(1, 4) {
+        // Migration from version 2 to 5
+        private val MIGRATION_2_5 = object : Migration(2, 5) {
             override fun migrate(database: SupportSQLiteDatabase) {
-                // Create reminder table
+                database.execSQL("ALTER TABLE transaksi ADD COLUMN category TEXT NOT NULL DEFAULT 'OTHER'")
                 database.execSQL("""
                     CREATE TABLE IF NOT EXISTS reminder (
                         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
                         content TEXT NOT NULL,
                         reminderTime INTEGER NOT NULL,
                         createdAt INTEGER NOT NULL,
-                        isCompleted INTEGER NOT NULL DEFAULT 0
+                        isCompleted INTEGER NOT NULL DEFAULT 0,
+                        recurrenceType TEXT NOT NULL DEFAULT 'NONE',
+                        recurrenceInterval INTEGER NOT NULL DEFAULT 1
                     )
                 """.trimIndent())
-                // Create memory table
                 database.execSQL("""
                     CREATE TABLE IF NOT EXISTS memory (
                         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -88,20 +127,12 @@ abstract class AppDatabase : RoomDatabase() {
             }
         }
 
-        // Migration from version 2 to 4 (skip intermediate)
-        private val MIGRATION_2_4 = object : Migration(2, 4) {
+        // Migration from version 3 to 5
+        private val MIGRATION_3_5 = object : Migration(3, 5) {
             override fun migrate(database: SupportSQLiteDatabase) {
-                // Create reminder table
-                database.execSQL("""
-                    CREATE TABLE IF NOT EXISTS reminder (
-                        id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                        content TEXT NOT NULL,
-                        reminderTime INTEGER NOT NULL,
-                        createdAt INTEGER NOT NULL,
-                        isCompleted INTEGER NOT NULL DEFAULT 0
-                    )
-                """.trimIndent())
-                // Create memory table
+                database.execSQL("ALTER TABLE transaksi ADD COLUMN category TEXT NOT NULL DEFAULT 'OTHER'")
+                database.execSQL("ALTER TABLE reminder ADD COLUMN recurrenceType TEXT NOT NULL DEFAULT 'NONE'")
+                database.execSQL("ALTER TABLE reminder ADD COLUMN recurrenceInterval INTEGER NOT NULL DEFAULT 1")
                 database.execSQL("""
                     CREATE TABLE IF NOT EXISTS memory (
                         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -124,10 +155,12 @@ abstract class AppDatabase : RoomDatabase() {
                     MIGRATION_1_2,
                     MIGRATION_2_3,
                     MIGRATION_3_4,
-                    MIGRATION_1_4,
-                    MIGRATION_2_4
+                    MIGRATION_4_5,
+                    MIGRATION_1_5,
+                    MIGRATION_2_5,
+                    MIGRATION_3_5
                 )
-                .fallbackToDestructiveMigration() // Fallback for unknown versions
+                .fallbackToDestructiveMigration()
                 .build()
                 INSTANCE = instance
                 instance
@@ -140,3 +173,4 @@ abstract class AppDatabase : RoomDatabase() {
         }
     }
 }
+

@@ -143,6 +143,33 @@ class MainActivity : AppCompatActivity() {
                 checkPermissionAndStartVoiceInput()
             }, 500)
         }
+        
+        // Insights card click
+        binding.cardInsights.setOnClickListener {
+            startActivity(Intent(this, InsightsActivity::class.java))
+        }
+        
+        // Load today's spending for insights card
+        loadInsightsSpending()
+    }
+    
+    private fun loadInsightsSpending() {
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                val todayStart = java.util.Calendar.getInstance().apply {
+                    set(java.util.Calendar.HOUR_OF_DAY, 0)
+                    set(java.util.Calendar.MINUTE, 0)
+                    set(java.util.Calendar.SECOND, 0)
+                    set(java.util.Calendar.MILLISECOND, 0)
+                }.timeInMillis
+                val spending = kotlinx.coroutines.withContext(Dispatchers.IO) {
+                    database.transaksiDao().getSpendingSince(todayStart) ?: 0
+                }
+                binding.textInsightsSpending.text = currencyFormat.format(spending)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 
     private fun setupFabMenu() {
@@ -425,11 +452,14 @@ class MainActivity : AppCompatActivity() {
                             parsedResult.keperluan,
                             parsedResult.total,
                             parsedResult.keterangan,
-                            parsedResult.transactionDate
+                            parsedResult.transactionDate,
+                            parsedResult.transactionCategory
                         )
                         Category.PENGINGAT -> showReminderPreviewDialog(
                             parsedResult.keperluan,
-                            parsedResult.reminderTime
+                            parsedResult.reminderTime,
+                            parsedResult.recurrenceType,
+                            parsedResult.recurrenceInterval
                         )
                         Category.MEMORY -> showMemoryPreviewDialog(parsedResult.keperluan)
                         Category.QUERY -> handleQuery(parsedResult.keperluan)
@@ -534,7 +564,7 @@ class MainActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    private fun showTransactionPreviewDialog(keperluan: String, total: Int, keterangan: String, transactionDate: Long = System.currentTimeMillis()) {
+    private fun showTransactionPreviewDialog(keperluan: String, total: Int, keterangan: String, transactionDate: Long = System.currentTimeMillis(), category: String = "OTHER") {
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.dialog_preview)
@@ -561,10 +591,12 @@ class MainActivity : AppCompatActivity() {
                     tanggal = transactionDate,
                     keperluan = keperluan,
                     total = total,
-                    keterangan = keterangan
+                    keterangan = keterangan,
+                    category = category
                 )
                 mainViewModel.insertTransaksi(transaksi)
                 Toast.makeText(this, "Transaksi disimpan!", Toast.LENGTH_SHORT).show()
+                loadInsightsSpending() // Refresh insights card
                 dialog.dismiss()
             } else {
                 Toast.makeText(this, "Keperluan dan Total harus diisi", Toast.LENGTH_SHORT).show()
@@ -608,7 +640,7 @@ class MainActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    private fun showReminderPreviewDialog(content: String, reminderTime: Long) {
+    private fun showReminderPreviewDialog(content: String, reminderTime: Long, recurrenceType: String = "NONE", recurrenceInterval: Int = 1) {
         val dialog = Dialog(this)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(R.layout.dialog_preview_reminder)
@@ -631,7 +663,9 @@ class MainActivity : AppCompatActivity() {
             if (content.isNotBlank()) {
                 val reminder = ReminderEntity(
                     content = content,
-                    reminderTime = reminderTime
+                    reminderTime = reminderTime,
+                    recurrenceType = recurrenceType,
+                    recurrenceInterval = recurrenceInterval
                 )
                 mainViewModel.insertReminder(reminder) { reminderId ->
                     ReminderScheduler.scheduleReminder(
@@ -641,7 +675,8 @@ class MainActivity : AppCompatActivity() {
                         reminderTime
                     )
                 }
-                Toast.makeText(this, "Pengingat disimpan!", Toast.LENGTH_SHORT).show()
+                val recurrenceText = if (recurrenceType != "NONE") " (${recurrenceType.lowercase()})" else ""
+                Toast.makeText(this, "Pengingat disimpan!$recurrenceText", Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
             } else {
                 Toast.makeText(this, "Pengingat tidak boleh kosong", Toast.LENGTH_SHORT).show()

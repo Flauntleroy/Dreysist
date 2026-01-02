@@ -10,5 +10,6 @@ data class TransaksiEntity(
     val tanggal: Long,
     val keperluan: String,
     val total: Int,
-    val keterangan: String
+    val keterangan: String,
+    val category: String = "OTHER"
 )

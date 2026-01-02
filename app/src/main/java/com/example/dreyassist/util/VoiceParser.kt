@@ -614,12 +614,36 @@ object VoiceParser {
             calendar.set(Calendar.MILLISECOND, 0)
         }
 
+        // Detect recurrence pattern
+        var recurrenceType = "NONE"
+        var recurrenceInterval = 1
+        
+        when {
+            lowercasedText.contains("setiap hari") || lowercasedText.contains("tiap hari") || 
+            lowercasedText.contains("sehari-hari") || lowercasedText.contains("harian") -> {
+                recurrenceType = "DAILY"
+                content = content.replace(Regex("""setiap hari|tiap hari|sehari-hari|harian""", RegexOption.IGNORE_CASE), "").trim()
+            }
+            lowercasedText.contains("setiap minggu") || lowercasedText.contains("tiap minggu") || 
+            lowercasedText.contains("mingguan") || lowercasedText.contains("setiap week") -> {
+                recurrenceType = "WEEKLY"
+                content = content.replace(Regex("""setiap minggu|tiap minggu|mingguan|setiap week""", RegexOption.IGNORE_CASE), "").trim()
+            }
+            lowercasedText.contains("setiap bulan") || lowercasedText.contains("tiap bulan") || 
+            lowercasedText.contains("bulanan") || lowercasedText.contains("setiap tanggal") -> {
+                recurrenceType = "MONTHLY"
+                content = content.replace(Regex("""setiap bulan|tiap bulan|bulanan|setiap tanggal""", RegexOption.IGNORE_CASE), "").trim()
+            }
+        }
+
         return ParsedResult(
             category = Category.PENGINGAT,
             keperluan = content.capitalizeWords(),
             total = 0,
             keterangan = "",
-            reminderTime = calendar.timeInMillis
+            reminderTime = calendar.timeInMillis,
+            recurrenceType = recurrenceType,
+            recurrenceInterval = recurrenceInterval
         )
     }
 
@@ -793,7 +817,8 @@ object VoiceParser {
             total = total,
             keterangan = keterangan.capitalizeWords(),
             reminderTime = 0,
-            transactionDate = transactionDate
+            transactionDate = transactionDate,
+            transactionCategory = CategoryDetector.detect(originalText).name
         )
     }
 
@@ -894,5 +919,9 @@ data class ParsedResult(
     val total: Int,
     val keterangan: String,
     val reminderTime: Long = 0,
-    val transactionDate: Long = System.currentTimeMillis()
+    val transactionDate: Long = System.currentTimeMillis(),
+    val transactionCategory: String = "OTHER",
+    val recurrenceType: String = "NONE",
+    val recurrenceInterval: Int = 1
 )
+

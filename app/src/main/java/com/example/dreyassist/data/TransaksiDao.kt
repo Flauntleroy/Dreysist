@@ -71,5 +71,19 @@ interface TransaksiDao {
     // Transaksi dalam rentang waktu
     @Query("SELECT * FROM transaksi WHERE tanggal >= :startTime AND tanggal <= :endTime ORDER BY tanggal DESC")
     fun getTransactionsBetween(startTime: Long, endTime: Long): Flow<List<TransaksiEntity>>
+    
+    // Count transactions since a time
+    @Query("SELECT COUNT(*) FROM transaksi WHERE tanggal >= :startTime")
+    suspend fun getTransactionCountSince(startTime: Long): Int
+    
+    // Category statistics
+    @Query("SELECT category, SUM(total) as total, COUNT(*) as count FROM transaksi GROUP BY category ORDER BY total DESC")
+    suspend fun getCategoryStats(): List<CategoryStat>
 }
+
+data class CategoryStat(
+    val category: String,
+    val total: Int,
+    val count: Int
+)
 

@@ -10,5 +10,7 @@ data class ReminderEntity(
     val content: String,
     val reminderTime: Long,
     val createdAt: Long = System.currentTimeMillis(),
-    val isCompleted: Boolean = false
+    val isCompleted: Boolean = false,
+    val recurrenceType: String = "NONE",  // NONE, DAILY, WEEKLY, MONTHLY
+    val recurrenceInterval: Int = 1        // every X days/weeks/months
 )
