@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
 import android.speech.RecognitionListener
@@ -53,6 +54,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var rippleAnim2: Animation
     private lateinit var rippleAnim3: Animation
     private lateinit var pulseAnim: Animation
+    
+    private var mediaPlayer: MediaPlayer? = null
     
     private var isFabOpen = false
 
@@ -178,14 +181,29 @@ class MainActivity : AppCompatActivity() {
         // Animate FAB rotation
         binding.fabMain.animate().rotation(180f).setDuration(200).start()
         
-        // Animate menu items
-        binding.fabMenuContainer.alpha = 0f
-        binding.fabMenuContainer.translationY = 50f
-        binding.fabMenuContainer.animate()
-            .alpha(1f)
-            .translationY(0f)
-            .setDuration(200)
-            .start()
+        // Animate overlay fade in
+        binding.fabOverlay.alpha = 0f
+        binding.fabOverlay.animate().alpha(1f).setDuration(200).start()
+        
+        // Animate menu items with staggered effect
+        val menuItems = listOf(
+            binding.fabTransaksi,
+            binding.fabJurnal,
+            binding.fabPengingat,
+            binding.fabBackup,
+            binding.fabAbout
+        )
+        
+        menuItems.forEachIndexed { index, item ->
+            item.alpha = 0f
+            item.translationX = 50f
+            item.animate()
+                .alpha(1f)
+                .translationX(0f)
+                .setStartDelay((index * 50).toLong())
+                .setDuration(200)
+                .start()
+        }
     }
 
     private fun closeFabMenu() {
@@ -194,10 +212,27 @@ class MainActivity : AppCompatActivity() {
         
         binding.fabMain.animate().rotation(0f).setDuration(200).start()
         
-        binding.fabMenuContainer.animate()
+        // Animate menu items closing with staggered effect (reverse order)
+        val menuItems = listOf(
+            binding.fabAbout,
+            binding.fabBackup,
+            binding.fabPengingat,
+            binding.fabJurnal,
+            binding.fabTransaksi
+        )
+        
+        menuItems.forEachIndexed { index, item ->
+            item.animate()
+                .alpha(0f)
+                .translationX(50f)
+                .setStartDelay((index * 30).toLong())
+                .setDuration(150)
+                .start()
+        }
+        
+        binding.fabOverlay.animate()
             .alpha(0f)
-            .translationY(50f)
-            .setDuration(150)
+            .setDuration(200)
             .withEndAction {
                 binding.fabOverlay.visibility = View.GONE
                 binding.fabMenuContainer.visibility = View.GONE
@@ -374,10 +409,24 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startVoiceInput() {
+        // Release previous instance if any
+        mediaPlayer?.release()
+        
+        // Play custom welcome sound
+        mediaPlayer = MediaPlayer.create(this, R.raw.welcome_voice)
+        mediaPlayer?.setOnCompletionListener { mp ->
+            mp.release()
+        }
+        // Set volume to maximum (1.0 = 100%)
+        mediaPlayer?.setVolume(1.0f, 1.0f)
+        mediaPlayer?.start()
+        
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "id-ID")
         intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Silakan bicara...")
+        // Disable default beep sound
+        intent.putExtra("android.speech.extra.BEEP", false)
         speechRecognizer.startListening(intent)
     }
 
@@ -501,5 +550,7 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         speechRecognizer.destroy()
+        mediaPlayer?.release()
+        mediaPlayer = null
     }
 }
