@@ -50,7 +50,11 @@ class DreysistWidgetLarge : AppWidgetProvider() {
         ) {
             val views = RemoteViews(context.packageName, R.layout.widget_dreysist_large)
 
-            // Set up click intent for voice button
+            // Set current time
+            val timeFormat = java.text.SimpleDateFormat("HH:mm", Locale.getDefault())
+            views.setTextViewText(R.id.text_time, timeFormat.format(java.util.Date()))
+
+            // Set up click intent for whole widget (opens voice input)
             val voiceIntent = Intent(context, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
                 putExtra("start_voice", true)
@@ -61,19 +65,7 @@ class DreysistWidgetLarge : AppWidgetProvider() {
                 voiceIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
-            views.setOnClickPendingIntent(R.id.btn_voice, voicePendingIntent)
-
-            // Set up click intent for widget container (open app)
-            val mainIntent = Intent(context, MainActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-            }
-            val mainPendingIntent = PendingIntent.getActivity(
-                context,
-                2,
-                mainIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-            )
-            views.setOnClickPendingIntent(R.id.widget_container, mainPendingIntent)
+            views.setOnClickPendingIntent(R.id.widget_container, voicePendingIntent)
 
             // Load data asynchronously
             CoroutineScope(Dispatchers.IO).launch {

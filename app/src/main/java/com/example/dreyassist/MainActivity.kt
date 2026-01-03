@@ -40,6 +40,7 @@ import com.example.dreyassist.ui.ItemType
 import com.example.dreyassist.ui.MainViewModel
 import com.example.dreyassist.ui.MainViewModelFactory
 import com.example.dreyassist.util.Category
+import com.example.dreyassist.util.CategoryDetector
 import com.example.dreyassist.util.QueryHandler
 import com.example.dreyassist.util.VoiceParser
 import kotlinx.coroutines.CoroutineScope
@@ -371,16 +372,8 @@ class MainActivity : AppCompatActivity() {
                 val itemView = LayoutInflater.from(this)
                     .inflate(R.layout.item_recent, binding.recentContainer, false)
                 
-                val typeText = when (item.type) {
-                    ItemType.TRANSAKSI -> "T"
-                    ItemType.JURNAL -> "J"
-                    ItemType.PENGINGAT -> "P"
-                    ItemType.MEMORY -> "M"
-                }
-                
-                itemView.findViewById<TextView>(R.id.text_type).text = typeText
                 itemView.findViewById<TextView>(R.id.text_title).text = item.title
-                itemView.findViewById<TextView>(R.id.text_subtitle).text = item.subtitle
+                itemView.findViewById<TextView>(R.id.text_date).text = dateFormat.format(Date(item.timestamp))
                 
                 binding.recentContainer.addView(itemView)
             }
@@ -580,6 +573,13 @@ class MainActivity : AppCompatActivity() {
             if (total > 0) currencyFormat.format(total) else "Rp 0"
         dialog.findViewById<TextView>(R.id.text_keterangan).text = 
             if (keterangan.isNotBlank()) keterangan else "-"
+        
+        // Display category
+        dialog.findViewById<android.widget.ImageView>(R.id.img_category).setImageResource(
+            CategoryDetector.getCategoryIconResId(category)
+        )
+        dialog.findViewById<TextView>(R.id.text_category).text = 
+            CategoryDetector.getCategoryName(category)
 
         dialog.findViewById<Button>(R.id.btn_cancel).setOnClickListener {
             dialog.dismiss()

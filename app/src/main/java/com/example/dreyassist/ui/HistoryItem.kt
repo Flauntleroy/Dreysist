@@ -17,7 +17,8 @@ data class HistoryItem(
     val type: ItemType,
     val title: String,
     val subtitle: String,
-    val timestamp: Long
+    val timestamp: Long,
+    val category: String? = null  // Transaction category (optional)
 ) {
     companion object {
         fun fromTransaksi(transaksi: TransaksiEntity): HistoryItem {
@@ -26,7 +27,8 @@ data class HistoryItem(
                 type = ItemType.TRANSAKSI,
                 title = transaksi.keperluan,
                 subtitle = "Rp ${String.format("%,d", transaksi.total).replace(',', '.')}",
-                timestamp = transaksi.tanggal
+                timestamp = transaksi.tanggal,
+                category = transaksi.category
             )
         }
 

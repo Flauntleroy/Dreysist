@@ -4,12 +4,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.dreyassist.R
 import com.example.dreyassist.data.TransaksiEntity
+import com.example.dreyassist.util.CategoryDetector
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -36,6 +38,7 @@ class TransaksiListAdapter(
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val imgCategory: ImageView = itemView.findViewById(R.id.img_category)
         private val textTitle: TextView = itemView.findViewById(R.id.text_title)
         private val textSubtitle: TextView = itemView.findViewById(R.id.text_subtitle)
         private val textDate: TextView = itemView.findViewById(R.id.text_date)
@@ -43,6 +46,10 @@ class TransaksiListAdapter(
         private val btnDelete: ImageButton = itemView.findViewById(R.id.btn_delete)
 
         fun bind(item: TransaksiEntity) {
+            // Show category icon
+            imgCategory.visibility = View.VISIBLE
+            imgCategory.setImageResource(CategoryDetector.getCategoryIconResId(item.category))
+            
             textTitle.text = item.keperluan
             textSubtitle.text = currencyFormat.format(item.total)
             textDate.text = dateFormat.format(Date(item.tanggal))
@@ -57,3 +64,4 @@ class TransaksiListAdapter(
         override fun areContentsTheSame(oldItem: TransaksiEntity, newItem: TransaksiEntity) = oldItem == newItem
     }
 }
+

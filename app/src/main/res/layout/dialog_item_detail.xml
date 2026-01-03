@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_glass_card"
+    android:padding="20dp">
+
+    <!-- Type Label -->
+    <TextView
+        android:id="@+id/text_type_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Transaction"
+        android:textColor="@color/accent_cyan"
+        android:textSize="12sp"
+        android:textAllCaps="true"
+        android:letterSpacing="0.1" />
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/text_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Title"
+        android:textColor="@color/text_primary"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginTop="8dp" />
+
+    <!-- Subtitle -->
+    <TextView
+        android:id="@+id/text_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Subtitle"
+        android:textColor="@color/text_hint"
+        android:textSize="14sp"
+        android:layout_marginTop="8dp" />
+
+    <!-- Category (for transactions) -->
+    <LinearLayout
+        android:id="@+id/container_category"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="12dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/img_category"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_category_other"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:id="@+id/text_category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+    <!-- Date -->
+    <TextView
+        android:id="@+id/text_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Date"
+        android:textColor="@color/text_hint"
+        android:textSize="12sp"
+        android:layout_marginTop="16dp" />
+
+    <!-- Close Button -->
+    <Button
+        android:id="@+id/btn_close"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:text="Close"
+        android:textColor="#0A1628"
+        android:background="@drawable/bg_button_accent"
+        android:layout_marginTop="20dp" />
+
+</LinearLayout>

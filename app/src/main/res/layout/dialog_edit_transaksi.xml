@@ -81,6 +81,23 @@
         android:layout_marginTop="4dp"
         android:layout_marginBottom="12dp" />
 
+    <!-- Kategori -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Kategori"
+        android:textColor="@color/text_hint"
+        android:textSize="12sp" />
+
+    <Spinner
+        android:id="@+id/spinner_category"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/bg_input_glass"
+        android:paddingHorizontal="12dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="12dp" />
+
     <!-- Tanggal -->
     <TextView
         android:layout_width="wrap_content"

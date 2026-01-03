@@ -9,6 +9,17 @@
     android:layout_marginBottom="10dp"
     android:gravity="center_vertical">
 
+    <!-- Category Icon (optional, hidden by default) -->
+    <ImageView
+        android:id="@+id/img_category"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:padding="6dp"
+        android:background="@drawable/bg_input_glass"
+        android:src="@drawable/ic_category_other"
+        android:layout_marginEnd="12dp"
+        android:visibility="gone" />
+
     <!-- Content -->
     <LinearLayout
         android:layout_width="0dp"

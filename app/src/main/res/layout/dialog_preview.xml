@@ -65,7 +65,39 @@
         android:textColor="@color/text_secondary"
         android:textSize="14sp"
         android:layout_marginTop="4dp"
-        android:layout_marginBottom="24dp" />
+        android:layout_marginBottom="16dp" />
+
+    <!-- Kategori -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Kategori"
+        android:textColor="@color/text_hint"
+        android:textSize="12sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="24dp">
+
+        <ImageView
+            android:id="@+id/img_category"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_category_other"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:id="@+id/text_category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_primary"
+            android:textSize="14sp" />
+
+    </LinearLayout>
 
     <!-- Buttons -->
     <LinearLayout
