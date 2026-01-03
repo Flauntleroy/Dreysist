@@ -55,26 +55,15 @@
 
     </LinearLayout>
 
-    <!-- Edit Button -->
+    <!-- More Actions Button -->
     <ImageButton
-        android:id="@+id/btn_edit"
+        android:id="@+id/btn_more"
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:background="@drawable/bg_input_glass"
-        android:src="@drawable/ic_edit"
+        android:src="@drawable/ic_more_vert"
         android:scaleType="center"
         android:layout_marginStart="8dp"
-        android:contentDescription="Edit" />
-
-    <!-- Delete Button -->
-    <ImageButton
-        android:id="@+id/btn_delete"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:background="@drawable/bg_input_glass"
-        android:src="@drawable/ic_delete"
-        android:scaleType="center"
-        android:layout_marginStart="8dp"
-        android:contentDescription="Delete" />
+        android:contentDescription="More actions" />
 
 </LinearLayout>

@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -15,6 +16,7 @@ import java.util.Date
 import java.util.Locale
 
 class ReminderListAdapter(
+    private val onClick: (ReminderEntity) -> Unit,
     private val onEdit: (ReminderEntity) -> Unit,
     private val onDelete: (ReminderEntity) -> Unit
 ) : ListAdapter<ReminderEntity, ReminderListAdapter.ViewHolder>(DiffCallback()) {
@@ -35,16 +37,35 @@ class ReminderListAdapter(
         private val textTitle: TextView = itemView.findViewById(R.id.text_title)
         private val textSubtitle: TextView = itemView.findViewById(R.id.text_subtitle)
         private val textDate: TextView = itemView.findViewById(R.id.text_date)
-        private val btnEdit: ImageButton = itemView.findViewById(R.id.btn_edit)
-        private val btnDelete: ImageButton = itemView.findViewById(R.id.btn_delete)
+        private val btnMore: ImageButton = itemView.findViewById(R.id.btn_more)
 
         fun bind(item: ReminderEntity) {
             textTitle.text = item.content
             textSubtitle.text = if (item.isCompleted) "Selesai" else "Aktif"
             textDate.text = dateFormat.format(Date(item.reminderTime))
 
-            btnEdit.setOnClickListener { onEdit(item) }
-            btnDelete.setOnClickListener { onDelete(item) }
+            // Card click for detail view
+            itemView.setOnClickListener { onClick(item) }
+
+            // More button with popup menu
+            btnMore.setOnClickListener { view ->
+                val popup = PopupMenu(view.context, view)
+                popup.menuInflater.inflate(R.menu.menu_item_actions, popup.menu)
+                popup.setOnMenuItemClickListener { menuItem ->
+                    when (menuItem.itemId) {
+                        R.id.action_edit -> {
+                            onEdit(item)
+                            true
+                        }
+                        R.id.action_delete -> {
+                            onDelete(item)
+                            true
+                        }
+                        else -> false
+                    }
+                }
+                popup.show()
+            }
         }
     }
 

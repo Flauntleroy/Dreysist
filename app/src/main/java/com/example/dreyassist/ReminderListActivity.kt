@@ -55,6 +55,7 @@ class ReminderListActivity : AppCompatActivity() {
         binding.btnAdd.setOnClickListener { showEditDialog(null) }
 
         adapter = ReminderListAdapter(
+            onClick = { showDetailDialog(it) },
             onEdit = { showEditDialog(it) },
             onDelete = { showDeleteConfirmation(it) }
         )
@@ -157,5 +158,29 @@ class ReminderListActivity : AppCompatActivity() {
             }
             .setNegativeButton("Batal", null)
             .show()
+    }
+
+    private fun showDetailDialog(reminder: ReminderEntity) {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_item_detail)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.setLayout(
+            (resources.displayMetrics.widthPixels * 0.9).toInt(),
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+
+        val fullDateFormat = java.text.SimpleDateFormat("EEEE, dd MMM yyyy • HH:mm", java.util.Locale("id", "ID"))
+
+        dialog.findViewById<TextView>(R.id.text_type_label).text = "PENGINGAT"
+        dialog.findViewById<TextView>(R.id.text_title).text = reminder.content
+        dialog.findViewById<TextView>(R.id.text_subtitle).text = if (reminder.isCompleted) "Selesai" else "Aktif"
+        dialog.findViewById<TextView>(R.id.text_date).text = fullDateFormat.format(Date(reminder.reminderTime))
+
+        dialog.findViewById<Button>(R.id.btn_close).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 }

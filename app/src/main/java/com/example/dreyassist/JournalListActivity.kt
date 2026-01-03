@@ -45,6 +45,7 @@ class JournalListActivity : AppCompatActivity() {
         binding.btnAdd.setOnClickListener { showEditDialog(null) }
 
         adapter = JournalListAdapter(
+            onClick = { showDetailDialog(it) },
             onEdit = { showEditDialog(it) },
             onDelete = { showDeleteConfirmation(it) }
         )
@@ -114,5 +115,29 @@ class JournalListActivity : AppCompatActivity() {
             }
             .setNegativeButton("Batal", null)
             .show()
+    }
+
+    private fun showDetailDialog(journal: JournalEntity) {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_item_detail)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.setLayout(
+            (resources.displayMetrics.widthPixels * 0.9).toInt(),
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+
+        val fullDateFormat = java.text.SimpleDateFormat("EEEE, dd MMM yyyy • HH:mm", java.util.Locale("id", "ID"))
+
+        dialog.findViewById<TextView>(R.id.text_type_label).text = "JURNAL"
+        dialog.findViewById<TextView>(R.id.text_title).text = journal.kegiatan
+        dialog.findViewById<TextView>(R.id.text_subtitle).text = "Catatan kegiatan"
+        dialog.findViewById<TextView>(R.id.text_date).text = fullDateFormat.format(java.util.Date(journal.tanggal))
+
+        dialog.findViewById<Button>(R.id.btn_close).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 }
