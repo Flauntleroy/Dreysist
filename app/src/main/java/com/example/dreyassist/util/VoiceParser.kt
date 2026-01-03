@@ -806,7 +806,9 @@ object VoiceParser {
             }
         }
 
-        keperluan = keperluan.trim()
+        // Clean up keperluan: remove trailing currency prefixes like "rp", "rupiah"
+        keperluan = cleanupKeperluan(keperluan)
+        
         if (keperluan.isEmpty() && total == 0) {
             keperluan = originalText
         }
@@ -820,6 +822,23 @@ object VoiceParser {
             transactionDate = transactionDate,
             transactionCategory = CategoryDetector.detect(originalText).name
         )
+    }
+
+    private fun cleanupKeperluan(text: String): String {
+        var cleaned = text.trim()
+        
+        // Remove trailing currency prefixes (can happen when "belanja di pasar rp 60000")
+        val trailingCurrencyPatterns = listOf(
+            Regex("""\s+rp\.?$""", RegexOption.IGNORE_CASE),
+            Regex("""\s+rupiah$""", RegexOption.IGNORE_CASE),
+            Regex("""\s+idr$""", RegexOption.IGNORE_CASE)
+        )
+        
+        for (pattern in trailingCurrencyPatterns) {
+            cleaned = cleaned.replace(pattern, "")
+        }
+        
+        return cleaned.trim()
     }
 
     private fun extractNumber(text: String): Int {
