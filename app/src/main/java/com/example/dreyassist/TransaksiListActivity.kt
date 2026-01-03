@@ -48,6 +48,9 @@ class TransaksiListActivity : AppCompatActivity() {
     }
 
     private val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale("id", "ID"))
+    private val currencyFormat = java.text.NumberFormat.getCurrencyInstance(Locale("id", "ID")).apply {
+        maximumFractionDigits = 0
+    }
     private var selectedDate = Calendar.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -85,6 +88,10 @@ class TransaksiListActivity : AppCompatActivity() {
             allTransactions
         }
         adapter.submitList(filtered)
+        
+        // Update total expenses
+        val total = filtered.sumOf { it.total }
+        binding.textTotalExpenses.text = currencyFormat.format(total)
     }
     
     private fun showDateFilterDialog() {
