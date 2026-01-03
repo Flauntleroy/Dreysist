@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    
+    <!-- Cute anime-style star/sparkle icon representing "servant" helper -->
+    <!-- Main star body -->
+    <path
+        android:fillColor="#8899AA"
+        android:pathData="M12,2L14.4,8.2L21,9.2L16.2,13.8L17.4,21L12,17.6L6.6,21L7.8,13.8L3,9.2L9.6,8.2L12,2Z" />
+    
+    <!-- Small sparkle accents -->
+    <path
+        android:fillColor="#667788"
+        android:pathData="M12,5L13,8L16,8.5L13.5,11L14,14L12,12.5L10,14L10.5,11L8,8.5L11,8L12,5Z" />
+    
+</vector>

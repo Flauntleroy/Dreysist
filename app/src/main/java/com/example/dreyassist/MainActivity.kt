@@ -167,6 +167,16 @@ class MainActivity : AppCompatActivity() {
                     database.transaksiDao().getSpendingSince(todayStart) ?: 0
                 }
                 binding.textInsightsSpending.text = currencyFormat.format(spending)
+                
+                // Generate humanized narrative
+                val narrative = when {
+                    spending == 0 -> "Belum ada pengeluaran hari ini."
+                    spending < 50000 -> "Pengeluaran ringan hari ini."
+                    spending < 100000 -> "Pengeluaran sedang hari ini."
+                    spending < 200000 -> "Lumayan banyak hari ini."
+                    else -> "Hari yang sibuk untuk dompetmu!"
+                }
+                binding.textInsightNarrative.text = narrative
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -360,8 +370,8 @@ class MainActivity : AppCompatActivity() {
         currentReminders.forEach { allItems.add(HistoryItem.fromReminder(it)) }
         currentMemories.forEach { allItems.add(HistoryItem.fromMemory(it)) }
         
-        // Sort by timestamp descending and take 3
-        val recentItems = allItems.sortedByDescending { it.timestamp }.take(3)
+        // Sort by timestamp descending and take 1 (simplified view)
+        val recentItems = allItems.sortedByDescending { it.timestamp }.take(1)
         
         if (recentItems.isEmpty()) {
             binding.textEmpty.visibility = View.VISIBLE

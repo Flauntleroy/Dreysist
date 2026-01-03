@@ -99,32 +99,48 @@
 
         </FrameLayout>
 
-        <!-- Today Spending (eye-catching) -->
+        <!-- Today Insight (simplified) -->
         <LinearLayout
             android:id="@+id/card_insights"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="16dp"
             android:clickable="true"
             android:focusable="true">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TODAY'S SPENDING"
-                android:textColor="@color/text_hint"
-                android:textSize="11sp"
-                android:letterSpacing="0.1" />
-
-            <TextView
-                android:id="@+id/text_insights_spending"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Rp 0"
-                android:textColor="@color/accent_cyan"
-                android:textSize="28sp"
-                android:textStyle="bold"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Today"
+                    android:textColor="@color/text_hint"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/text_insights_spending"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rp 0"
+                    android:textColor="@color/accent_cyan"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_marginStart="8dp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/text_insight_narrative"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Belum ada pengeluaran hari ini."
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp"
                 android:layout_marginTop="4dp" />
 
         </LinearLayout>
@@ -190,7 +206,7 @@
         android:id="@+id/fab_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#99000000"
+        android:background="#66000000"
         android:visibility="gone"
         android:clickable="true"
         android:focusable="true" />
@@ -412,25 +428,25 @@
 
     </LinearLayout>
 
-    <!-- Main FAB -->
+    <!-- Main FAB (Servant/Helper - subtle) -->
     <FrameLayout
         android:id="@+id/fab_main"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="24dp"
         android:background="@drawable/bg_fab_main"
-        android:elevation="8dp"
+        android:elevation="2dp"
         android:clickable="true"
         android:focusable="true">
 
         <ImageView
             android:id="@+id/fab_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
             android:layout_gravity="center"
-            android:src="@drawable/ic_menu"
+            android:src="@drawable/ic_fab_helper"
             android:contentDescription="Menu" />
 
     </FrameLayout>
