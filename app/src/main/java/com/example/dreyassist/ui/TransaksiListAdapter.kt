@@ -24,7 +24,7 @@ class TransaksiListAdapter(
     private val onDelete: (TransaksiEntity) -> Unit
 ) : ListAdapter<TransaksiEntity, TransaksiListAdapter.ViewHolder>(DiffCallback()) {
 
-    private val currencyFormat = NumberFormat.getCurrencyInstance(Locale.getDefault()).apply {
+    private val currencyFormat = NumberFormat.getCurrencyInstance(Locale("id", "ID")).apply {
         maximumFractionDigits = 0
     }
     private val dateFormat = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())

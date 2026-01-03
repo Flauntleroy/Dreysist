@@ -50,7 +50,7 @@ class HistoryActivity : BaseActivity() {
     
     private val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
     private val fullDateFormat = SimpleDateFormat("EEEE, dd MMM yyyy • HH:mm", Locale.getDefault())
-    private val currencyFormat = NumberFormat.getCurrencyInstance(Locale.getDefault()).apply {
+    private val currencyFormat = NumberFormat.getCurrencyInstance(Locale("id", "ID")).apply {
         maximumFractionDigits = 0
     }
 

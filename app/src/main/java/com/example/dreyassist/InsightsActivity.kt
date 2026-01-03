@@ -26,7 +26,7 @@ class InsightsActivity : BaseActivity() {
     private lateinit var binding: ActivityInsightsBinding
     private val database by lazy { AppDatabase.getDatabase(this) }
     
-    private val currencyFormat = NumberFormat.getCurrencyInstance(Locale.getDefault()).apply {
+    private val currencyFormat = NumberFormat.getCurrencyInstance(Locale("id", "ID")).apply {
         maximumFractionDigits = 0
     }
     private val monthFormat = SimpleDateFormat("MMMM yyyy", Locale.getDefault())

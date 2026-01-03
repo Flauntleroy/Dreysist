@@ -48,7 +48,7 @@ class TransaksiListActivity : BaseActivity() {
     }
 
     private val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
-    private val currencyFormat = java.text.NumberFormat.getCurrencyInstance(Locale.getDefault()).apply {
+    private val currencyFormat = java.text.NumberFormat.getCurrencyInstance(Locale("id", "ID")).apply {
         maximumFractionDigits = 0
     }
     private var selectedDate = Calendar.getInstance()
@@ -240,7 +240,7 @@ class TransaksiListActivity : BaseActivity() {
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
 
-        val currencyFormat = java.text.NumberFormat.getCurrencyInstance(Locale.getDefault()).apply {
+        val currencyFormat = java.text.NumberFormat.getCurrencyInstance(Locale("id", "ID")).apply {
             maximumFractionDigits = 0
         }
         val fullDateFormat = java.text.SimpleDateFormat("EEEE, dd MMM yyyy • HH:mm", Locale.getDefault())

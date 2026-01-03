@@ -75,7 +75,7 @@ class MainActivity : BaseActivity() {
     private lateinit var audioManager: AudioManager
     private var previousRingerMode: Int = AudioManager.RINGER_MODE_NORMAL
 
-    private val currencyFormat = NumberFormat.getCurrencyInstance(Locale.getDefault()).apply {
+    private val currencyFormat = NumberFormat.getCurrencyInstance(Locale("id", "ID")).apply {
         maximumFractionDigits = 0
     }
     
