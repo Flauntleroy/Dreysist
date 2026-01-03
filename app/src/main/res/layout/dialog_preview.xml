@@ -1,135 +1,159 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@drawable/bg_glass_card"
-    android:padding="24dp">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Preview Transaksi"
-        android:textColor="@color/text_primary"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="20dp" />
-
-    <!-- Keperluan -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Keperluan"
-        android:textColor="@color/text_hint"
-        android:textSize="12sp" />
-
-    <TextView
-        android:id="@+id/text_keperluan"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/text_primary"
-        android:textSize="16sp"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="16dp" />
-
-    <!-- Total -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Total"
-        android:textColor="@color/text_hint"
-        android:textSize="12sp" />
-
-    <TextView
-        android:id="@+id/text_total"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/accent_cyan"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="16dp" />
-
-    <!-- Keterangan -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Keterangan"
-        android:textColor="@color/text_hint"
-        android:textSize="12sp" />
-
-    <TextView
-        android:id="@+id/text_keterangan"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/text_secondary"
-        android:textSize="14sp"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="16dp" />
-
-    <!-- Kategori -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Kategori"
-        android:textColor="@color/text_hint"
-        android:textSize="12sp" />
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="24dp">
+        android:orientation="vertical"
+        android:background="@drawable/bg_glass_card"
+        android:padding="24dp">
 
-        <ImageView
-            android:id="@+id/img_category"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_category_other"
-            android:layout_marginEnd="8dp" />
+        <!-- Header with title and close button -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center_vertical"
+                android:text="Preview Transaksi"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/btn_close"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="end|center_vertical"
+                android:background="@drawable/bg_input_glass"
+                android:src="@drawable/ic_close"
+                android:scaleType="center"
+                android:contentDescription="Close" />
+
+        </FrameLayout>
+
+        <!-- Keperluan -->
         <TextView
-            android:id="@+id/text_category"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Keperluan"
+            android:textColor="@color/text_hint"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/text_keperluan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:textColor="@color/text_primary"
-            android:textSize="14sp" />
+            android:textSize="16sp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="16dp" />
 
-    </LinearLayout>
+        <!-- Total -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total"
+            android:textColor="@color/text_hint"
+            android:textSize="12sp" />
 
-    <!-- Buttons -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/text_total"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/accent_cyan"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="16dp" />
 
-        <Button
-            android:id="@+id/btn_cancel"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="48dp"
-            android:background="@drawable/bg_input_glass"
-            android:text="Batal"
+        <!-- Keterangan -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Keterangan"
+            android:textColor="@color/text_hint"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/text_keterangan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:textColor="@color/text_secondary"
             android:textSize="14sp"
-            android:textAllCaps="false"
-            android:layout_marginEnd="8dp" />
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="16dp" />
 
-        <Button
-            android:id="@+id/btn_save"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="48dp"
-            android:background="@drawable/bg_button_accent"
-            android:text="Simpan"
-            android:textColor="@color/night_sky_dark"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:textAllCaps="false"
-            android:layout_marginStart="8dp" />
+        <!-- Kategori -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Kategori"
+            android:textColor="@color/text_hint"
+            android:textSize="12sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="24dp">
+
+            <ImageView
+                android:id="@+id/img_category"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_category_other"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:id="@+id/text_category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_primary"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+        <!-- Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_edit"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_input_glass"
+                android:text="Edit"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp"
+                android:textAllCaps="false"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/btn_save"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_button_accent"
+                android:text="Simpan"
+                android:textColor="@color/night_sky_dark"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textAllCaps="false"
+                android:layout_marginStart="8dp" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
-</LinearLayout>
+</FrameLayout>

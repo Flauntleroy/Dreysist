@@ -591,8 +591,15 @@ class MainActivity : AppCompatActivity() {
         dialog.findViewById<TextView>(R.id.text_category).text = 
             CategoryDetector.getCategoryName(category)
 
-        dialog.findViewById<Button>(R.id.btn_cancel).setOnClickListener {
+        // Close button (X)
+        dialog.findViewById<android.widget.ImageButton>(R.id.btn_close).setOnClickListener {
             dialog.dismiss()
+        }
+
+        // Edit button - opens edit dialog
+        dialog.findViewById<Button>(R.id.btn_edit).setOnClickListener {
+            dialog.dismiss()
+            showTransactionEditDialog(keperluan, total, keterangan, transactionDate, category)
         }
 
         dialog.findViewById<Button>(R.id.btn_save).setOnClickListener {
@@ -608,6 +615,65 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Transaksi disimpan!", Toast.LENGTH_SHORT).show()
                 loadInsightsSpending() // Refresh insights card
                 dialog.dismiss()
+            } else {
+                Toast.makeText(this, "Keperluan dan Total harus diisi", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        dialog.show()
+    }
+
+    private fun showTransactionEditDialog(initialKeperluan: String, initialTotal: Int, initialKeterangan: String, transactionDate: Long, initialCategory: String) {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_edit_transaksi)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.setLayout(
+            (resources.displayMetrics.widthPixels * 0.9).toInt(),
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+
+        val title = dialog.findViewById<TextView>(R.id.dialog_title)
+        val editKeperluan = dialog.findViewById<android.widget.EditText>(R.id.edit_keperluan)
+        val editTotal = dialog.findViewById<android.widget.EditText>(R.id.edit_total)
+        val editKeterangan = dialog.findViewById<android.widget.EditText>(R.id.edit_keterangan)
+        val spinnerCategory = dialog.findViewById<android.widget.Spinner>(R.id.spinner_category)
+
+        title.text = "Edit Transaksi"
+        editKeperluan.setText(initialKeperluan)
+        editTotal.setText(initialTotal.toString())
+        editKeterangan.setText(initialKeterangan)
+
+        // Setup category spinner
+        val categories = CategoryDetector.Category.entries.map { it.displayName }
+        val adapter = android.widget.ArrayAdapter(this, android.R.layout.simple_spinner_item, categories)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerCategory.adapter = adapter
+
+        // Set current category
+        val currentCategoryIndex = CategoryDetector.Category.entries.indexOfFirst { it.name == initialCategory }
+        if (currentCategoryIndex >= 0) {
+            spinnerCategory.setSelection(currentCategoryIndex)
+        }
+
+        dialog.findViewById<Button>(R.id.btn_cancel).setOnClickListener {
+            dialog.dismiss()
+            // Go back to preview with original values
+            showTransactionPreviewDialog(initialKeperluan, initialTotal, initialKeterangan, transactionDate, initialCategory)
+        }
+
+        dialog.findViewById<Button>(R.id.btn_save).setOnClickListener {
+            val keperluan = editKeperluan.text.toString().trim()
+            val totalStr = editTotal.text.toString().replace(Regex("[^0-9]"), "")
+            val total = totalStr.toIntOrNull() ?: 0
+            val keterangan = editKeterangan.text.toString().trim()
+            val selectedCategoryIndex = spinnerCategory.selectedItemPosition
+            val category = CategoryDetector.Category.entries[selectedCategoryIndex].name
+
+            if (keperluan.isNotBlank() && total > 0) {
+                dialog.dismiss()
+                // Show preview again with updated values
+                showTransactionPreviewDialog(keperluan, total, keterangan, transactionDate, category)
             } else {
                 Toast.makeText(this, "Keperluan dan Total harus diisi", Toast.LENGTH_SHORT).show()
             }
