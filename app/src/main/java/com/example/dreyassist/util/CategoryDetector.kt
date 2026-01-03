@@ -11,6 +11,7 @@ object CategoryDetector {
     enum class Category(val displayName: String, val iconResId: Int) {
         TRANSPORT("Transport", R.drawable.ic_category_transport),
         FOOD("Food", R.drawable.ic_category_food),
+        GROCERIES("Groceries", R.drawable.ic_category_groceries),
         SHOPPING("Shopping", R.drawable.ic_category_shopping),
         BILLS("Bills", R.drawable.ic_category_bills),
         ENTERTAINMENT("Entertainment", R.drawable.ic_category_entertainment),
@@ -52,6 +53,21 @@ object CategoryDetector {
             // Delivery
             "grabfood", "gofood", "shopeefood"
         ),
+
+        Category.GROCERIES to listOf(
+            // Stores
+            "indomaret", "alfamart", "alfamidi", "supermarket", "minimarket",
+            "pasar", "warung kelontong", "toko sembako", "hypermart", "lotte", 
+            "super indo", "giant", "hero", "transmart", "carefour",
+            // Online Groceries
+            "sayurbox", "happyfresh", "segari", "astro",
+            // Items
+            "sembako", "beras", "minyak", "gula", "telur", "mie instan", 
+            "sabun", "shampoo", "odol", "deterjen", "tisu", "tissue",
+            "pampers", "susu bayi", "susu bubuk",
+            "sayur", "buah", "daging", "ayam", "ikan", "bumbu",
+            "garam", "penyedap", "kebutuhan dapur", "belanja bulanan"
+        ),
         
         Category.SHOPPING to listOf(
             // General
@@ -60,11 +76,10 @@ object CategoryDetector {
             "shopee", "tokopedia", "tokped", "lazada", "bukalapak", "blibli",
             "tiktok shop", "online shop", "olshop",
             // Stores
-            "indomaret", "alfamart", "alfamidi", "supermarket", "minimarket",
-            "mall", "toko", "store",
+            "mall", "toko", "store", "departement store", "outlet",
             // Items
             "baju", "celana", "sepatu", "tas", "aksesoris", "gadget",
-            "elektronik", "perabotan", "furniture"
+            "elektronik", "perabotan", "furniture", "kosmetik", "make up"
         ),
         
         Category.BILLS to listOf(
