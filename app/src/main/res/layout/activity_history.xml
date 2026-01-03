@@ -30,14 +30,14 @@
                 android:background="@drawable/bg_input_glass"
                 android:src="@drawable/ic_back"
                 android:padding="10dp"
-                android:contentDescription="Back"
+                android:contentDescription="@string/back"
                 app:tint="@color/text_primary" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="History"
+                android:text="@string/history"
                 android:textColor="@color/text_primary"
                 android:textSize="20sp"
                 android:textStyle="bold"
@@ -79,13 +79,13 @@
                 android:layout_width="64dp"
                 android:layout_height="64dp"
                 android:src="@drawable/ic_history"
-                android:contentDescription="No history"
+                android:contentDescription="@string/no_history"
                 app:tint="#4A5568" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="No history yet"
+                android:text="@string/no_history"
                 android:textColor="@color/text_hint"
                 android:textSize="16sp"
                 android:layout_marginTop="16dp" />
@@ -102,7 +102,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="20dp"
         android:src="@drawable/ic_calendar"
-        android:contentDescription="Filter by date"
+        android:contentDescription="@string/filter_by_date"
         app:backgroundTint="#1E293B"
         app:tint="#B0B8C9" />
 

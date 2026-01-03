@@ -20,18 +20,18 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class BackupActivity : AppCompatActivity() {
+class BackupActivity : BaseActivity() {
 
     private lateinit var binding: ActivityBackupBinding
-    private val dateFormat = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale("id", "ID"))
+    private val dateFormat = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
 
     private val restoreFilePicker = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             result.data?.data?.let { uri ->
                 AlertDialog.Builder(this)
-                    .setTitle("Restore Database")
-                    .setMessage("Data saat ini akan diganti dengan data backup. Lanjutkan?")
-                    .setPositiveButton("Restore") { _, _ ->
+                    .setTitle(getString(R.string.restore_db_title))
+                    .setMessage(getString(R.string.restore_db_message))
+                    .setPositiveButton(getString(R.string.restore)) { _, _ ->
                         if (BackupHelper.restoreBackup(this, uri)) {
                             // Restart app
                             val intent = packageManager.getLaunchIntentForPackage(packageName)
@@ -40,7 +40,7 @@ class BackupActivity : AppCompatActivity() {
                             finishAffinity()
                         }
                     }
-                    .setNegativeButton("Batal", null)
+                    .setNegativeButton(getString(R.string.cancel), null)
                     .show()
             }
         }
@@ -61,12 +61,12 @@ class BackupActivity : AppCompatActivity() {
             val backupFile = BackupHelper.createBackup(this)
             if (backupFile != null) {
                 AlertDialog.Builder(this)
-                    .setTitle("Backup Berhasil")
-                    .setMessage("Share backup ke Google Drive atau penyimpanan lain?")
-                    .setPositiveButton("Share") { _, _ ->
+                    .setTitle(getString(R.string.backup_success_title))
+                    .setMessage(getString(R.string.backup_success_message))
+                    .setPositiveButton(getString(R.string.share)) { _, _ ->
                         BackupHelper.shareBackup(this, backupFile)
                     }
-                    .setNegativeButton("Nanti", null)
+                    .setNegativeButton(getString(R.string.later), null)
                     .show()
                 loadBackupList()
             }
@@ -113,9 +113,9 @@ class BackupActivity : AppCompatActivity() {
 
         itemView.findViewById<Button>(R.id.btn_restore_local).setOnClickListener {
             AlertDialog.Builder(this)
-                .setTitle("Restore Database")
-                .setMessage("Data saat ini akan diganti dengan backup ini. Lanjutkan?")
-                .setPositiveButton("Restore") { _, _ ->
+                .setTitle(getString(R.string.restore_db_title))
+                .setMessage(getString(R.string.restore_db_message))
+                .setPositiveButton(getString(R.string.restore)) { _, _ ->
                     if (BackupHelper.restoreBackup(this, android.net.Uri.fromFile(file))) {
                         val intent = packageManager.getLaunchIntentForPackage(packageName)
                         intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -123,7 +123,7 @@ class BackupActivity : AppCompatActivity() {
                         finishAffinity()
                     }
                 }
-                .setNegativeButton("Batal", null)
+                .setNegativeButton(getString(R.string.cancel), null)
                 .show()
         }
 

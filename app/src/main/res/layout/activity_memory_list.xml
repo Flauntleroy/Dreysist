@@ -23,13 +23,13 @@
             android:background="@drawable/bg_input_glass"
             android:src="@drawable/ic_back"
             android:scaleType="center"
-            android:contentDescription="Back" />
+            android:contentDescription="@string/back" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Notes"
+            android:text="@string/menu_notes"
             android:textColor="@color/text_primary"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -42,7 +42,7 @@
             android:background="@drawable/bg_button_accent"
             android:src="@drawable/ic_add"
             android:scaleType="center"
-            android:contentDescription="Add" />
+            android:contentDescription="@string/add" />
 
     </LinearLayout>
 

@@ -21,7 +21,7 @@
             android:id="@+id/text_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="What's your command,"
+            android:text="@string/main_title_line1"
             android:textColor="#B0B8C9"
             android:textSize="18sp"
             android:fontFamily="sans-serif-light"
@@ -30,7 +30,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Master?"
+            android:text="@string/main_title_line2"
             android:textColor="@color/text_primary"
             android:textSize="32sp"
             android:textStyle="bold"
@@ -42,7 +42,7 @@
             android:id="@+id/text_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tap the button to start"
+            android:text="@string/main_status_tap"
             android:textColor="#5A6380"
             android:textSize="13sp"
             android:layout_marginTop="12dp"
@@ -118,7 +118,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Today"
+                    android:text="@string/today"
                     android:textColor="@color/text_hint"
                     android:textSize="12sp" />
 
@@ -138,7 +138,7 @@
                 android:id="@+id/text_insight_narrative"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Belum ada pengeluaran hari ini."
+                android:text="@string/no_expenses_today"
                 android:textColor="@color/text_secondary"
                 android:textSize="13sp"
                 android:layout_marginTop="4dp" />
@@ -163,7 +163,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="RECENT"
+                    android:text="@string/recent"
                     android:textColor="#4A5568"
                     android:textSize="11sp"
                     android:letterSpacing="0.15"
@@ -173,7 +173,7 @@
                     android:id="@+id/btn_history"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="View All"
+                    android:text="@string/view_all"
                     android:textColor="#00D4FF"
                     android:textSize="11sp"
                     android:fontFamily="sans-serif-medium" />
@@ -190,7 +190,7 @@
                 android:id="@+id/text_empty"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="No data yet"
+                android:text="@string/no_data_yet"
                 android:textColor="#4A5568"
                 android:textSize="13sp"
                 android:gravity="center"
@@ -235,7 +235,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="About"
+                android:text="@string/menu_about"
                 android:textColor="#B0B8C9"
                 android:textSize="14sp"
                 android:background="@drawable/bg_fab_label"
@@ -269,7 +269,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Backup"
+                android:text="@string/menu_backup"
                 android:textColor="@color/text_primary"
                 android:textSize="14sp"
                 android:background="@drawable/bg_fab_label"
@@ -303,7 +303,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Notes"
+                android:text="@string/menu_notes"
                 android:textColor="#B0B8C9"
                 android:textSize="14sp"
                 android:background="@drawable/bg_fab_label"
@@ -337,7 +337,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Reminder"
+                android:text="@string/menu_reminder"
                 android:textColor="#B0B8C9"
                 android:textSize="14sp"
                 android:background="@drawable/bg_fab_label"
@@ -371,7 +371,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Journal"
+                android:text="@string/menu_journal"
                 android:textColor="#B0B8C9"
                 android:textSize="14sp"
                 android:background="@drawable/bg_fab_label"
@@ -404,7 +404,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Transaction"
+                android:text="@string/menu_transaction"
                 android:textColor="#B0B8C9"
                 android:textSize="14sp"
                 android:background="@drawable/bg_fab_label"

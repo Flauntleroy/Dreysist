@@ -1,7 +1,9 @@
 package com.example.dreyassist
 
 import android.Manifest
+import android.app.DatePickerDialog
 import android.app.Dialog
+import android.app.TimePickerDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -27,6 +29,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.dreyassist.data.AppDatabase
 import com.example.dreyassist.data.JournalEntity
 import com.example.dreyassist.data.MemoryEntity
@@ -46,12 +49,14 @@ import com.example.dreyassist.util.VoiceParser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var speechRecognizer: SpeechRecognizer
@@ -70,12 +75,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var audioManager: AudioManager
     private var previousRingerMode: Int = AudioManager.RINGER_MODE_NORMAL
 
-    private val currencyFormat = NumberFormat.getCurrencyInstance(Locale("id", "ID")).apply {
+    private val currencyFormat = NumberFormat.getCurrencyInstance(Locale.getDefault()).apply {
         maximumFractionDigits = 0
     }
     
-    private val dateFormat = SimpleDateFormat("EEEE, dd MMMM yyyy", Locale("id", "ID"))
-    private val timeFormat = SimpleDateFormat("hh:mm a", Locale("id", "ID"))
+    private val dateFormat = SimpleDateFormat("EEEE, dd MMMM yyyy", Locale.getDefault())
+    private val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
 
     private val database by lazy { AppDatabase.getDatabase(this) }
     
@@ -98,13 +103,13 @@ class MainActivity : AppCompatActivity() {
         if (isGranted) {
             startVoiceInput()
         } else {
-            Toast.makeText(this, "Izin merekam suara ditolak", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.permission_audio_denied), Toast.LENGTH_SHORT).show()
         }
     }
 
     private val requestNotificationPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
         if (!isGranted) {
-            Toast.makeText(this, "Izin notifikasi ditolak", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.permission_notification_denied), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -155,26 +160,26 @@ class MainActivity : AppCompatActivity() {
     }
     
     private fun loadInsightsSpending() {
-        CoroutineScope(Dispatchers.Main).launch {
+        lifecycleScope.launch {
             try {
-                val todayStart = java.util.Calendar.getInstance().apply {
-                    set(java.util.Calendar.HOUR_OF_DAY, 0)
-                    set(java.util.Calendar.MINUTE, 0)
-                    set(java.util.Calendar.SECOND, 0)
-                    set(java.util.Calendar.MILLISECOND, 0)
+                val todayStart = Calendar.getInstance().apply {
+                    set(Calendar.HOUR_OF_DAY, 0)
+                    set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0)
+                    set(Calendar.MILLISECOND, 0)
                 }.timeInMillis
-                val spending = kotlinx.coroutines.withContext(Dispatchers.IO) {
+                val spending = withContext(Dispatchers.IO) {
                     database.transaksiDao().getSpendingSince(todayStart) ?: 0
                 }
                 binding.textInsightsSpending.text = currencyFormat.format(spending)
                 
                 // Generate humanized narrative
                 val narrative = when {
-                    spending == 0 -> "Belum ada pengeluaran hari ini."
-                    spending < 50000 -> "Pengeluaran ringan hari ini."
-                    spending < 100000 -> "Pengeluaran sedang hari ini."
-                    spending < 200000 -> "Lumayan banyak hari ini."
-                    else -> "Hari yang sibuk untuk dompetmu!"
+                    spending == 0 -> getString(R.string.insight_zero)
+                    spending < 50000 -> getString(R.string.insight_low)
+                    spending < 100000 -> getString(R.string.insight_medium)
+                    spending < 200000 -> getString(R.string.insight_high)
+                    else -> getString(R.string.insight_very_high)
                 }
                 binding.textInsightNarrative.text = narrative
             } catch (e: Exception) {
@@ -409,7 +414,7 @@ class MainActivity : AppCompatActivity() {
         speechRecognizer.setRecognitionListener(object : RecognitionListener {
             override fun onReadyForSpeech(params: Bundle?) {
                 isRecording = true
-                binding.textStatus.text = "Listening..."
+                binding.textStatus.text = getString(R.string.listening)
                 binding.voiceButton.startAnimation(pulseAnim)
                 stopIdleAnimations()
             }
@@ -419,7 +424,7 @@ class MainActivity : AppCompatActivity() {
             override fun onBufferReceived(buffer: ByteArray?) {}
             
             override fun onEndOfSpeech() {
-                binding.textStatus.text = "Processing..."
+                binding.textStatus.text = getString(R.string.processing)
             }
 
             override fun onError(error: Int) {
@@ -427,11 +432,11 @@ class MainActivity : AppCompatActivity() {
                 restoreRingerMode() // Restore ringer mode
                 binding.voiceButton.clearAnimation()
                 startIdleAnimations()
-                binding.textStatus.text = "Tap the button to start"
+                binding.textStatus.text = getString(R.string.tap_to_start)
                 
                 val errorMessage = when (error) {
-                    SpeechRecognizer.ERROR_NO_MATCH -> "Tidak ada suara terdeteksi"
-                    SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> "Waktu habis, coba lagi"
+                    SpeechRecognizer.ERROR_NO_MATCH -> getString(R.string.error_no_speech)
+                    SpeechRecognizer.ERROR_SPEECH_TIMEOUT -> getString(R.string.error_timeout)
                     else -> "Error: $error"
                 }
                 Toast.makeText(this@MainActivity, errorMessage, Toast.LENGTH_SHORT).show()
@@ -442,7 +447,7 @@ class MainActivity : AppCompatActivity() {
                 restoreRingerMode() // Restore ringer mode
                 binding.voiceButton.clearAnimation()
                 startIdleAnimations()
-                binding.textStatus.text = "Tap the button to start"
+                binding.textStatus.text = getString(R.string.tap_to_start)
 
                 val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                 if (!matches.isNullOrEmpty()) {
@@ -499,7 +504,7 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, "id-ID")
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Silakan bicara...")
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, getString(R.string.please_speak))
         // Disable default beep sound
         intent.putExtra("android.speech.extra.BEEP", false)
         speechRecognizer.startListening(intent)
@@ -537,12 +542,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleQuery(queryText: String) {
-        CoroutineScope(Dispatchers.Main).launch {
+        lifecycleScope.launch {
             try {
-                val result = queryHandler.processQuery(queryText)
+                val result = withContext(Dispatchers.IO) {
+                    queryHandler.processQuery(queryText)
+                }
                 showQueryAnswerDialog(queryText, result.answer)
             } catch (e: Exception) {
-                showQueryAnswerDialog(queryText, "Maaf, terjadi error: ${e.message}")
+                showQueryAnswerDialog(queryText, getString(R.string.error_occurred, e.message ?: "unknown"))
             }
         }
     }
@@ -589,7 +596,7 @@ class MainActivity : AppCompatActivity() {
             CategoryDetector.getCategoryIconResId(category)
         )
         dialog.findViewById<TextView>(R.id.text_category).text = 
-            CategoryDetector.getCategoryName(category)
+        CategoryDetector.getCategoryName(category, this)
 
         // Close button (X)
         dialog.findViewById<android.widget.ImageButton>(R.id.btn_close).setOnClickListener {
@@ -612,11 +619,11 @@ class MainActivity : AppCompatActivity() {
                     category = category
                 )
                 mainViewModel.insertTransaksi(transaksi)
-                Toast.makeText(this, "Transaksi disimpan!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.transaction_saved), Toast.LENGTH_SHORT).show()
                 loadInsightsSpending() // Refresh insights card
                 dialog.dismiss()
             } else {
-                Toast.makeText(this, "Keperluan dan Total harus diisi", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.error_fill_all), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -639,13 +646,13 @@ class MainActivity : AppCompatActivity() {
         val editKeterangan = dialog.findViewById<android.widget.EditText>(R.id.edit_keterangan)
         val spinnerCategory = dialog.findViewById<android.widget.Spinner>(R.id.spinner_category)
 
-        title.text = "Edit Transaksi"
+        title.text = getString(R.string.edit_transaction)
         editKeperluan.setText(initialKeperluan)
         editTotal.setText(initialTotal.toString())
         editKeterangan.setText(initialKeterangan)
 
         // Setup category spinner
-        val categories = CategoryDetector.Category.entries.map { it.displayName }
+        val categories = CategoryDetector.Category.entries.map { CategoryDetector.getCategoryName(it.name, this) }
         val adapter = android.widget.ArrayAdapter(this, android.R.layout.simple_spinner_item, categories)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerCategory.adapter = adapter
@@ -675,7 +682,7 @@ class MainActivity : AppCompatActivity() {
                 // Show preview again with updated values
                 showTransactionPreviewDialog(keperluan, total, keterangan, transactionDate, category)
             } else {
-                Toast.makeText(this, "Keperluan dan Total harus diisi", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.error_fill_all), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -695,8 +702,15 @@ class MainActivity : AppCompatActivity() {
         dialog.findViewById<TextView>(R.id.text_kegiatan).text = 
             if (kegiatan.isNotBlank()) kegiatan else "-"
 
-        dialog.findViewById<Button>(R.id.btn_cancel).setOnClickListener {
+        // Close button (X)
+        dialog.findViewById<android.widget.ImageButton>(R.id.btn_close).setOnClickListener {
             dialog.dismiss()
+        }
+
+        // Edit button
+        dialog.findViewById<Button>(R.id.btn_edit).setOnClickListener {
+            dialog.dismiss()
+            showJournalEditDialog(kegiatan)
         }
 
         dialog.findViewById<Button>(R.id.btn_save).setOnClickListener {
@@ -706,10 +720,41 @@ class MainActivity : AppCompatActivity() {
                     kegiatan = kegiatan
                 )
                 mainViewModel.insertJournal(journal)
-                Toast.makeText(this, "Jurnal disimpan!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.journal_saved), Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
             } else {
-                Toast.makeText(this, "Kegiatan tidak boleh kosong", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.error_journal_empty), Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        dialog.show()
+    }
+
+    private fun showJournalEditDialog(initialKegiatan: String) {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_edit_journal)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.setLayout(
+            (resources.displayMetrics.widthPixels * 0.9).toInt(),
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+
+        val editKegiatan = dialog.findViewById<android.widget.EditText>(R.id.edit_kegiatan)
+        editKegiatan.setText(initialKegiatan)
+
+        dialog.findViewById<Button>(R.id.btn_cancel).setOnClickListener {
+            dialog.dismiss()
+            showJournalPreviewDialog(initialKegiatan)
+        }
+
+        dialog.findViewById<Button>(R.id.btn_save).setOnClickListener {
+            val kegiatan = editKegiatan.text.toString().trim()
+            if (kegiatan.isNotBlank()) {
+                dialog.dismiss()
+                showJournalPreviewDialog(kegiatan)
+            } else {
+                Toast.makeText(this, getString(R.string.error_journal_empty), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -731,8 +776,15 @@ class MainActivity : AppCompatActivity() {
         dialog.findViewById<TextView>(R.id.text_date).text = dateFormat.format(Date(reminderTime))
         dialog.findViewById<TextView>(R.id.text_time).text = timeFormat.format(Date(reminderTime))
 
-        dialog.findViewById<Button>(R.id.btn_cancel).setOnClickListener {
+        // Close button (X)
+        dialog.findViewById<android.widget.ImageButton>(R.id.btn_close).setOnClickListener {
             dialog.dismiss()
+        }
+
+        // Edit button
+        dialog.findViewById<Button>(R.id.btn_edit).setOnClickListener {
+            dialog.dismiss()
+            showReminderEditDialog(content, reminderTime, recurrenceType, recurrenceInterval)
         }
 
         dialog.findViewById<Button>(R.id.btn_save).setOnClickListener {
@@ -752,10 +804,67 @@ class MainActivity : AppCompatActivity() {
                     )
                 }
                 val recurrenceText = if (recurrenceType != "NONE") " (${recurrenceType.lowercase()})" else ""
-                Toast.makeText(this, "Pengingat disimpan!$recurrenceText", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.reminder_saved), Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
             } else {
-                Toast.makeText(this, "Pengingat tidak boleh kosong", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.error_reminder_empty), Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        dialog.show()
+    }
+
+    private fun showReminderEditDialog(initialContent: String, initialTime: Long, recurrenceType: String, recurrenceInterval: Int) {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_edit_reminder)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.setLayout(
+            (resources.displayMetrics.widthPixels * 0.9).toInt(),
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+
+        val editContent = dialog.findViewById<android.widget.EditText>(R.id.edit_content)
+        val textDate = dialog.findViewById<TextView>(R.id.text_date)
+        val textTime = dialog.findViewById<TextView>(R.id.text_time)
+        
+        editContent.setText(initialContent)
+        
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = initialTime
+        
+        textDate.text = dateFormat.format(Date(calendar.timeInMillis))
+        textTime.text = timeFormat.format(Date(calendar.timeInMillis))
+
+        dialog.findViewById<Button>(R.id.btn_pick_date).setOnClickListener {
+            DatePickerDialog(this, { _, year, month, day ->
+                calendar.set(Calendar.YEAR, year)
+                calendar.set(Calendar.MONTH, month)
+                calendar.set(Calendar.DAY_OF_MONTH, day)
+                textDate.text = dateFormat.format(Date(calendar.timeInMillis))
+            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show()
+        }
+
+        dialog.findViewById<Button>(R.id.btn_pick_time).setOnClickListener {
+            TimePickerDialog(this, { _, hour, minute ->
+                calendar.set(Calendar.HOUR_OF_DAY, hour)
+                calendar.set(Calendar.MINUTE, minute)
+                textTime.text = timeFormat.format(Date(calendar.timeInMillis))
+            }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show()
+        }
+
+        dialog.findViewById<Button>(R.id.btn_cancel).setOnClickListener {
+            dialog.dismiss()
+            showReminderPreviewDialog(initialContent, initialTime, recurrenceType, recurrenceInterval)
+        }
+
+        dialog.findViewById<Button>(R.id.btn_save).setOnClickListener {
+            val content = editContent.text.toString().trim()
+            if (content.isNotBlank()) {
+                dialog.dismiss()
+                showReminderPreviewDialog(content, calendar.timeInMillis, recurrenceType, recurrenceInterval)
+            } else {
+                Toast.makeText(this, getString(R.string.error_reminder_empty), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -775,8 +884,15 @@ class MainActivity : AppCompatActivity() {
         dialog.findViewById<TextView>(R.id.text_content).text = 
             if (content.isNotBlank()) content else "-"
 
-        dialog.findViewById<Button>(R.id.btn_cancel).setOnClickListener {
+        // Close button (X)
+        dialog.findViewById<android.widget.ImageButton>(R.id.btn_close).setOnClickListener {
             dialog.dismiss()
+        }
+
+        // Edit button
+        dialog.findViewById<Button>(R.id.btn_edit).setOnClickListener {
+            dialog.dismiss()
+            showMemoryEditDialog(content)
         }
 
         dialog.findViewById<Button>(R.id.btn_save).setOnClickListener {
@@ -785,10 +901,41 @@ class MainActivity : AppCompatActivity() {
                     content = content
                 )
                 mainViewModel.insertMemory(memory)
-                Toast.makeText(this, "Catatan disimpan!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.memory_saved), Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
             } else {
-                Toast.makeText(this, "Catatan tidak boleh kosong", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.error_memory_empty), Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        dialog.show()
+    }
+
+    private fun showMemoryEditDialog(initialContent: String) {
+        val dialog = Dialog(this)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.dialog_edit_memory)
+        dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog.window?.setLayout(
+            (resources.displayMetrics.widthPixels * 0.9).toInt(),
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+
+        val editContent = dialog.findViewById<android.widget.EditText>(R.id.edit_content)
+        editContent.setText(initialContent)
+
+        dialog.findViewById<Button>(R.id.btn_cancel).setOnClickListener {
+            dialog.dismiss()
+            showMemoryPreviewDialog(initialContent)
+        }
+
+        dialog.findViewById<Button>(R.id.btn_save).setOnClickListener {
+            val content = editContent.text.toString().trim()
+            if (content.isNotBlank()) {
+                dialog.dismiss()
+                showMemoryPreviewDialog(content)
+            } else {
+                Toast.makeText(this, getString(R.string.error_memory_empty), Toast.LENGTH_SHORT).show()
             }
         }
 

@@ -30,7 +30,7 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-class TransaksiListActivity : AppCompatActivity() {
+class TransaksiListActivity : BaseActivity() {
 
     private lateinit var binding: ActivityTransaksiListBinding
     private val database by lazy { AppDatabase.getDatabase(this) }
@@ -47,8 +47,8 @@ class TransaksiListActivity : AppCompatActivity() {
         MainViewModelFactory(database.transaksiDao(), database.journalDao(), database.reminderDao(), database.memoryDao())
     }
 
-    private val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale("id", "ID"))
-    private val currencyFormat = java.text.NumberFormat.getCurrencyInstance(Locale("id", "ID")).apply {
+    private val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+    private val currencyFormat = java.text.NumberFormat.getCurrencyInstance(Locale.getDefault()).apply {
         maximumFractionDigits = 0
     }
     private var selectedDate = Calendar.getInstance()
@@ -113,13 +113,13 @@ class TransaksiListActivity : AppCompatActivity() {
                 binding.textDateFilter.visibility = android.view.View.VISIBLE
                 
                 applyDateFilter()
-                Toast.makeText(this, "Filter applied", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.filter_applied), Toast.LENGTH_SHORT).show()
             }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).apply {
-                setTitle("Select End Date")
+                setTitle(getString(R.string.select_end_date))
                 show()
             }
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).apply {
-            setTitle("Select Start Date")
+            setTitle(getString(R.string.select_start_date))
             show()
         }
     }
@@ -144,7 +144,7 @@ class TransaksiListActivity : AppCompatActivity() {
 
         // Setup category spinner
         val categories = CategoryDetector.Category.values()
-        val categoryNames = categories.map { it.displayName }
+        val categoryNames = categories.map { CategoryDetector.getCategoryName(it.name, this) }
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categoryNames)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerCategory.adapter = adapter
@@ -152,7 +152,7 @@ class TransaksiListActivity : AppCompatActivity() {
         selectedDate = Calendar.getInstance()
 
         if (transaksi != null) {
-            title.text = "Edit Transaksi"
+            title.text = getString(R.string.edit_transaction)
             editKeperluan.setText(transaksi.keperluan)
             editTotal.setText(transaksi.total.toString())
             editKeterangan.setText(transaksi.keterangan)
@@ -164,7 +164,7 @@ class TransaksiListActivity : AppCompatActivity() {
                 spinnerCategory.setSelection(categoryIndex)
             }
         } else {
-            title.text = "Tambah Transaksi"
+            title.text = getString(R.string.add_transaction)
         }
 
         textDate.text = dateFormat.format(Date(selectedDate.timeInMillis))
@@ -189,7 +189,7 @@ class TransaksiListActivity : AppCompatActivity() {
             val selectedCategory = categories[spinnerCategory.selectedItemPosition].name
 
             if (keperluan.isEmpty() || total <= 0) {
-                Toast.makeText(this, "Keperluan dan Total harus diisi", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.error_fill_all), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -201,7 +201,7 @@ class TransaksiListActivity : AppCompatActivity() {
                     keterangan = keterangan,
                     category = selectedCategory
                 ))
-                Toast.makeText(this, "Transaksi diperbarui", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.transaction_updated), Toast.LENGTH_SHORT).show()
             } else {
                 viewModel.insertTransaksi(TransaksiEntity(
                     tanggal = selectedDate.timeInMillis,
@@ -210,7 +210,7 @@ class TransaksiListActivity : AppCompatActivity() {
                     keterangan = keterangan,
                     category = selectedCategory
                 ))
-                Toast.makeText(this, "Transaksi ditambahkan", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.transaction_added), Toast.LENGTH_SHORT).show()
             }
             dialog.dismiss()
         }
@@ -220,13 +220,13 @@ class TransaksiListActivity : AppCompatActivity() {
 
     private fun showDeleteConfirmation(transaksi: TransaksiEntity) {
         AlertDialog.Builder(this)
-            .setTitle("Hapus Transaksi")
-            .setMessage("Yakin ingin menghapus transaksi ini?")
-            .setPositiveButton("Hapus") { _, _ ->
+            .setTitle(getString(R.string.delete_transaction_title))
+            .setMessage(getString(R.string.delete_transaction_message))
+            .setPositiveButton(getString(R.string.delete)) { _, _ ->
                 viewModel.deleteTransaksi(transaksi)
-                Toast.makeText(this, "Transaksi dihapus", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.transaction_deleted), Toast.LENGTH_SHORT).show()
             }
-            .setNegativeButton("Batal", null)
+            .setNegativeButton(getString(R.string.cancel), null)
             .show()
     }
 
@@ -240,12 +240,12 @@ class TransaksiListActivity : AppCompatActivity() {
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
 
-        val currencyFormat = java.text.NumberFormat.getCurrencyInstance(java.util.Locale("id", "ID")).apply {
+        val currencyFormat = java.text.NumberFormat.getCurrencyInstance(Locale.getDefault()).apply {
             maximumFractionDigits = 0
         }
-        val fullDateFormat = java.text.SimpleDateFormat("EEEE, dd MMM yyyy • HH:mm", java.util.Locale("id", "ID"))
+        val fullDateFormat = java.text.SimpleDateFormat("EEEE, dd MMM yyyy • HH:mm", Locale.getDefault())
 
-        dialog.findViewById<TextView>(R.id.text_type_label).text = "TRANSAKSI"
+        dialog.findViewById<TextView>(R.id.text_type_label).text = getString(R.string.menu_transaction).uppercase()
         dialog.findViewById<TextView>(R.id.text_title).text = transaksi.keperluan
         dialog.findViewById<TextView>(R.id.text_subtitle).text = currencyFormat.format(transaksi.total)
         dialog.findViewById<TextView>(R.id.text_date).text = fullDateFormat.format(java.util.Date(transaksi.tanggal))
@@ -256,7 +256,7 @@ class TransaksiListActivity : AppCompatActivity() {
         dialog.findViewById<android.widget.ImageView>(R.id.img_category).setImageResource(
             CategoryDetector.getCategoryIconResId(transaksi.category)
         )
-        dialog.findViewById<TextView>(R.id.text_category).text = CategoryDetector.getCategoryName(transaksi.category)
+        dialog.findViewById<TextView>(R.id.text_category).text = CategoryDetector.getCategoryName(transaksi.category, this)
 
         dialog.findViewById<Button>(R.id.btn_close).setOnClickListener {
             dialog.dismiss()

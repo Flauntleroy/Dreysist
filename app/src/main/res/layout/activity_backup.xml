@@ -23,13 +23,13 @@
             android:background="@drawable/bg_input_glass"
             android:src="@drawable/ic_back"
             android:scaleType="center"
-            android:contentDescription="Back" />
+            android:contentDescription="@string/back" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Backup &amp; Restore"
+            android:text="@string/backup_restore_title"
             android:textColor="@color/text_primary"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -59,7 +59,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Backup Database"
+                    android:text="@string/backup_db"
                     android:textColor="@color/text_primary"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -68,7 +68,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Buat backup dan share ke Google Drive atau penyimpanan lain"
+                    android:text="@string/backup_desc"
                     android:textColor="@color/text_hint"
                     android:textSize="13sp"
                     android:layout_marginBottom="16dp" />
@@ -78,7 +78,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:background="@drawable/bg_button_accent"
-                    android:text="Backup Sekarang"
+                    android:text="@string/btn_backup_now"
                     android:textColor="@color/night_sky_dark"
                     android:textStyle="bold"
                     android:textAllCaps="false" />
@@ -97,7 +97,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Restore Database"
+                    android:text="@string/restore_db"
                     android:textColor="@color/text_primary"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -106,7 +106,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Pulihkan data dari file backup (.db)"
+                    android:text="@string/restore_desc"
                     android:textColor="@color/text_hint"
                     android:textSize="13sp"
                     android:layout_marginBottom="16dp" />
@@ -116,7 +116,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
                     android:background="@drawable/bg_input_glass"
-                    android:text="Pilih File Backup"
+                    android:text="@string/btn_select_backup"
                     android:textColor="@color/text_primary"
                     android:textAllCaps="false" />
 
@@ -133,7 +133,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Backup Lokal"
+                    android:text="@string/local_backups"
                     android:textColor="@color/text_primary"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -149,7 +149,7 @@
                     android:id="@+id/text_no_backups"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Belum ada backup lokal"
+                    android:text="@string/no_local_backups"
                     android:textColor="@color/text_hint"
                     android:textSize="13sp"
                     android:gravity="center"

@@ -10,7 +10,7 @@
         android:id="@+id/dialog_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tambah Transaksi"
+        android:text="@string/edit_transaction"
         android:textColor="@color/text_primary"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -20,7 +20,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Keperluan"
+        android:text="@string/purpose"
         android:textColor="@color/text_hint"
         android:textSize="12sp" />
 
@@ -62,7 +62,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Keterangan"
+        android:text="@string/description"
         android:textColor="@color/text_hint"
         android:textSize="12sp" />
 
@@ -85,7 +85,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Kategori"
+        android:text="@string/category"
         android:textColor="@color/text_hint"
         android:textSize="12sp" />
 
@@ -102,7 +102,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Tanggal"
+        android:text="@string/date"
         android:textColor="@color/text_hint"
         android:textSize="12sp" />
 
@@ -147,7 +147,7 @@
             android:layout_weight="1"
             android:layout_height="48dp"
             android:background="@drawable/bg_input_glass"
-            android:text="Batal"
+            android:text="@string/cancel"
             android:textColor="@color/text_secondary"
             android:textSize="14sp"
             android:textAllCaps="false"
@@ -159,7 +159,7 @@
             android:layout_weight="1"
             android:layout_height="48dp"
             android:background="@drawable/bg_button_accent"
-            android:text="Simpan"
+            android:text="@string/save"
             android:textColor="@color/night_sky_dark"
             android:textSize="14sp"
             android:textStyle="bold"

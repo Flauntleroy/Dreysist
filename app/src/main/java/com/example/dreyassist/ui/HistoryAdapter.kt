@@ -32,7 +32,7 @@ class HistoryAdapter(
         private val textSubtitle: TextView = itemView.findViewById(R.id.text_subtitle)
         private val textDate: TextView = itemView.findViewById(R.id.text_date)
 
-        private val dateFormat = java.text.SimpleDateFormat("dd MMM yyyy, HH:mm", java.util.Locale("id", "ID"))
+        private val dateFormat = java.text.SimpleDateFormat("dd MMM yyyy, HH:mm", java.util.Locale.getDefault())
 
         fun bind(item: HistoryItem) {
             textType.text = when (item.type) {

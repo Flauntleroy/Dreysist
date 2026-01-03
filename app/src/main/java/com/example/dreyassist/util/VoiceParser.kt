@@ -14,17 +14,32 @@ enum class Category {
 object VoiceParser {
 
     private val numberWords = mapOf(
+        // Indonesian
         "satu" to 1, "dua" to 2, "tiga" to 3, "empat" to 4, "lima" to 5,
         "enam" to 6, "tujuh" to 7, "delapan" to 8, "sembilan" to 9, "sepuluh" to 10,
         "sebelas" to 11, "dua belas" to 12, "tiga belas" to 13, "empat belas" to 14,
         "lima belas" to 15, "enam belas" to 16, "tujuh belas" to 17, "delapan belas" to 18,
-        "sembilan belas" to 19, "dua puluh" to 20, "seratus" to 100, "seribu" to 1000
+        "sembilan belas" to 19, "dua puluh" to 20, "seratus" to 100, "seribu" to 1000,
+        "sejuta" to 1000000,
+        // English
+        "one" to 1, "two" to 2, "three" to 3, "four" to 4, "five" to 5,
+        "six" to 6, "seven" to 7, "eight" to 8, "nine" to 9, "ten" to 10,
+        "eleven" to 11, "twelve" to 12, "thirteen" to 13, "fourteen" to 14,
+        "fifteen" to 15, "sixteen" to 16, "seventeen" to 17, "eighteen" to 18,
+        "nineteen" to 19, "twenty" to 20, "thirty" to 30, "forty" to 40,
+        "fifty" to 50, "sixty" to 60, "seventy" to 70, "eighty" to 80,
+        "ninety" to 90, "hundred" to 100, "thousand" to 1000, "million" to 1000000
     )
 
     private val monthNames = mapOf(
+        // Indonesian
         "januari" to 0, "februari" to 1, "maret" to 2, "april" to 3,
         "mei" to 4, "juni" to 5, "juli" to 6, "agustus" to 7,
-        "september" to 8, "oktober" to 9, "november" to 10, "desember" to 11
+        "september" to 8, "oktober" to 9, "november" to 10, "desember" to 11,
+        // English
+        "january" to 0, "february" to 1, "march" to 2, "april" to 3,
+        "may" to 4, "june" to 5, "july" to 6, "august" to 7,
+        "september" to 8, "october" to 9, "november" to 10, "december" to 11
     )
 
     // ============================================================
@@ -122,10 +137,30 @@ object VoiceParser {
         "hasil freelance", "project", "proyek", "fee",
         "komisi", "commission",
         
+        // === ENGLISH TRANSACTION ===
+        "buy", "buying", "bought", "purchase", "purchasing",
+        "pay", "paying", "paid", "payment",
+        "spend", "spending", "spent", "expense", "expenses",
+        "bill", "bills", "cost", "costs", "price", "pricing",
+        "shopping", "shop", "shopped",
+        "eat", "eating", "ate", "breakfast", "lunch", "dinner", "brunch",
+        "drink", "drinking", "drank", "beverage",
+        "fuel", "gas", "petrol", "refill", "top up", "topup",
+        "taxi", "cab", "uber", "ride",
+        "ticket", "tickets", "booking", "reserved",
+        "rent", "rental", "lease",
+        "tax", "taxes",
+        "donate", "donation", "charity", "gift",
+        "transfer", "sent money", "wire",
+        "loan", "borrow", "lend",
+        "subscription", "membership",
+        "salary", "wage", "income", "earned", "earning", "profit",
+        "bonus", "commission", "cashback", "refund", "reimbursement",
+        
         // === NOMINAL INDICATORS ===
         "habis", "keluar", "menghabiskan", "mengeluarkan", "spent",
         "total", "senilai", "seharga", "sebesar", "harga", "nominal",
-        "ribu", "rb", "juta", "jt", "rupiah", "rp"
+        "ribu", "rb", "juta", "jt", "rupiah", "rp", "thousand", "million", "usd", "dollars"
     )
     
     private val transactionExclusions = listOf(
@@ -213,12 +248,21 @@ object VoiceParser {
         "olahraga", "gym", "lari", "jogging", "workout",
         
         // === PEKERJAAN ===
-        "hari ini kerja", "kerja hari ini",
-        "di kantor", "di office", "wfh", "work from home",
-        "ngoding", "coding", "programming",
-        "desain", "design", "bikin design",
-        "nulis", "writing", "bikin artikel",
-        "riset", "research", "analisis"
+        // === ENGLISH JOURNAL ===
+        "today", "today i", "today we", "today's",
+        "doing", "done", "finished", "completed", "accomplished",
+        "work", "working", "worked",
+        "journal", "entry", "diary", "log", "note", "notes",
+        "story", "tell", "telling", "told",
+        "feel", "feeling", "felt", "i am", "i'm", "i was",
+        "happy", "sad", "angry", "excited", "tired", "exhausted",
+        "grateful", "blessed", "proud", "disappointed",
+        "learnt", "learned", "realized", "confused",
+        "meeting", "presentation", "interview", "event",
+        "birthday", "anniversary", "wedding", "graduation",
+        "vacation", "trip", "traveling", "holiday",
+        "gym", "workout", "exercise", "running",
+        "coding", "programming", "designing", "writing", "researching"
     )
     
     private val journalExclusions = listOf(
@@ -278,11 +322,18 @@ object VoiceParser {
         "last day", "hari terakhir",
         
         // === TUGAS / TODO ===
-        "todo", "to do", "to-do", "tugas", "task", "tasks",
-        "harus", "wajib", "perlu", "mesti", "kudu",
-        "segera", "urgent", "mendesak", "darurat",
-        "penting", "important", "prioritas", "priority",
-        "pending", "belum selesai", "belum beres"
+        // === ENGLISH REMINDER ===
+        "remind", "remind me", "remind me to", "reminder",
+        "don't forget", "dont forget", "do not forget",
+        "remember", "remember to", "must", "need to",
+        "alarm", "timer", "set alarm", "set timer",
+        "schedule", "scheduling", "appointment",
+        "tomorrow", "the day after tomorrow", "next week", "next month", "next year",
+        "later", "tonight", "this evening", "this morning", "this afternoon",
+        "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday",
+        "weekend", "weekdays",
+        "deadline", "due date", "due", "urgent", "important", "priority",
+        "todo", "to do", "task", "tasks", "pending"
     )
     
     private val reminderExclusions = listOf(
@@ -334,12 +385,15 @@ object VoiceParser {
         "plat nomor", "nopol", "nomor polisi",
         
         // === REFERENSI ===
-        "link", "linknya", "website", "web", "situs",
-        "url", "alamat web",
-        "referensi", "reference", "sumber",
-        "buku", "judul buku", "book",
-        "artikel", "article",
-        "video", "youtube", "tutorial"
+        // === ENGLISH MEMORY ===
+        "save", "save info", "save information", "store", "keep",
+        "remember that", "remember this", "note this", "take note",
+        "important info", "details", "specification", "specs",
+        "address", "location", "phone number", "email",
+        "account", "username", "password", "pin", "code",
+        "fact", "data", "size", "dimension", "number",
+        "favorite", "favourite", "like", "love", "hate",
+        "website", "link", "url", "reference", "source"
     )
     
     private val memoryExclusions = listOf(
@@ -349,8 +403,8 @@ object VoiceParser {
     )
 
     // Legacy keywords for backward compatibility
-    private val totalKeywords = listOf("total", "seharga", "senilai", "harga", "sebesar", "nominal")
-    private val keteranganKeywords = listOf("rincian", "keterangan", "detail", "isi", "untuk", "yaitu", "berupa")
+    private val totalKeywords = listOf("total", "seharga", "senilai", "harga", "sebesar", "nominal", "worth", "cost", "value")
+    private val keteranganKeywords = listOf("rincian", "keterangan", "detail", "isi", "untuk", "yaitu", "berupa", "for", "details", "description", "note")
 
     // ============================================================
     // QUERY KEYWORDS - For REMEMBER feature (asking questions)
@@ -399,7 +453,12 @@ object VoiceParser {
         "password apa", "pin apa",
         "alamatnya apa", "emailnya apa",
         "cari catatan", "search notes",
-        "ada catatan", "catatan tentang"
+        "ada catatan", "catatan tentang",
+        // === ENGLISH QUERIES ===
+        "how much", "how many", "what are", "what is",
+        "when", "when was", "where", "who", "why",
+        "last record", "last activity", "recent",
+        "total expenses", "total spending", "how much spent"
     )
 
     fun parse(text: String): ParsedResult {
@@ -528,32 +587,49 @@ object VoiceParser {
         val calendar = Calendar.getInstance()
         var foundTime = false
 
-        // Parse "tanggal X bulan tahun"
-        val dateRegex = Regex("""tanggal\s+(\d{1,2})\s+(\w+)(?:\s+(\d{4}))?""")
-        val dateMatch = dateRegex.find(lowercasedText)
-        if (dateMatch != null) {
-            val day = dateMatch.groupValues[1].toIntOrNull() ?: 1
-            val monthName = dateMatch.groupValues[2]
-            val year = dateMatch.groupValues[3].toIntOrNull() ?: calendar.get(Calendar.YEAR)
+        // Parse "tanggal X bulan tahun" or "on Month X year"
+        val dateRegex = Regex("""(tanggal|on|at|date)?\s*(\d{1,2}(?:st|nd|rd|th)?|\w+)\s*(\d{1,2}(?:st|nd|rd|th)?|\w+)(?:\s+(\d{4}))?""", RegexOption.IGNORE_CASE)
+        val dateMatches = dateRegex.findAll(lowercasedText)
+        
+        for (match in dateMatches) {
+            val val1 = match.groupValues[2].lowercase().replace(Regex("""st|nd|rd|th"""), "")
+            val val2 = match.groupValues[3].lowercase().replace(Regex("""st|nd|rd|th"""), "")
+            val yearStr = match.groupValues[4]
             
-            val month = monthNames[monthName] ?: calendar.get(Calendar.MONTH)
+            var day = -1
+            var month = -1
             
-            calendar.set(Calendar.DAY_OF_MONTH, day)
-            calendar.set(Calendar.MONTH, month)
-            calendar.set(Calendar.YEAR, year)
+            // Try Val1 as Day, Val2 as Month
+            if (val1.toIntOrNull() != null && monthNames.containsKey(val2)) {
+                day = val1.toInt()
+                month = monthNames[val2]!!
+            } 
+            // Try Val1 as Month, Val2 as Day
+            else if (monthNames.containsKey(val1) && val2.toIntOrNull() != null) {
+                month = monthNames[val1]!!
+                day = val2.toInt()
+            }
             
-            content = content.replace(dateRegex, "").trim()
+            if (day != -1 && month != -1) {
+                calendar.set(Calendar.DAY_OF_MONTH, day)
+                calendar.set(Calendar.MONTH, month)
+                if (yearStr.isNotEmpty()) {
+                    calendar.set(Calendar.YEAR, yearStr.toInt())
+                }
+                content = content.replace(match.value, "").trim()
+                break
+            }
         }
 
         // Parse relative days
         when {
-            lowercasedText.contains("besok") -> {
+            lowercasedText.contains("besok") || lowercasedText.contains("tomorrow") -> {
                 calendar.add(Calendar.DAY_OF_MONTH, 1)
-                content = content.replace(Regex("""besok""", RegexOption.IGNORE_CASE), "").trim()
+                content = content.replace(Regex("""besok|tomorrow""", RegexOption.IGNORE_CASE), "").trim()
             }
-            lowercasedText.contains("lusa") -> {
+            lowercasedText.contains("lusa") || lowercasedText.contains("the day after tomorrow") -> {
                 calendar.add(Calendar.DAY_OF_MONTH, 2)
-                content = content.replace(Regex("""lusa""", RegexOption.IGNORE_CASE), "").trim()
+                content = content.replace(Regex("""lusa|the day after tomorrow""", RegexOption.IGNORE_CASE), "").trim()
             }
         }
         
@@ -562,33 +638,35 @@ object VoiceParser {
             "senin" to Calendar.MONDAY, "selasa" to Calendar.TUESDAY,
             "rabu" to Calendar.WEDNESDAY, "kamis" to Calendar.THURSDAY,
             "jumat" to Calendar.FRIDAY, "sabtu" to Calendar.SATURDAY,
-            "minggu" to Calendar.SUNDAY
+            "minggu" to Calendar.SUNDAY,
+            "monday" to Calendar.MONDAY, "tuesday" to Calendar.TUESDAY,
+            "wednesday" to Calendar.WEDNESDAY, "thursday" to Calendar.THURSDAY,
+            "friday" to Calendar.FRIDAY, "saturday" to Calendar.SATURDAY,
+            "sunday" to Calendar.SUNDAY
         )
         
         for ((dayName, dayValue) in dayNames) {
             if (lowercasedText.contains(dayName)) {
-                val today = calendar.get(Calendar.DAY_OF_WEEK)
+                val today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK)
                 var daysToAdd = dayValue - today
                 if (daysToAdd <= 0) daysToAdd += 7
                 calendar.add(Calendar.DAY_OF_MONTH, daysToAdd)
-                content = content.replace(Regex("""$dayName(\s+depan)?""", RegexOption.IGNORE_CASE), "").trim()
+                content = content.replace(Regex("""$dayName(\s+depan|\s+next)?""", RegexOption.IGNORE_CASE), "").trim()
                 break
             }
         }
 
-        // Parse "jam X" - supports 12:52, 12.52, 12 52
-        val timeRegex = Regex("""jam\s+(\d{1,2})(?:[:.\s](\d{1,2}))?(?:\s+(pagi|siang|sore|malam))?""")
+        // Parse "jam X" or "at X" - supports 12:52, 12.52, 12 52
+        val timeRegex = Regex("""(jam|at|pukul)\s+(\d{1,2})(?:[:.\s](\d{1,2}))?(?:\s*(pagi|siang|sore|malam|am|pm))?""", RegexOption.IGNORE_CASE)
         val timeMatch = timeRegex.find(lowercasedText)
         if (timeMatch != null) {
-            var hour = timeMatch.groupValues[1].toIntOrNull() ?: 9
-            val minute = timeMatch.groupValues[2].toIntOrNull() ?: 0
-            val period = timeMatch.groupValues[3]
+            var hour = timeMatch.groupValues[2].toIntOrNull() ?: 9
+            val minute = timeMatch.groupValues[3].toIntOrNull() ?: 0
+            val period = timeMatch.groupValues[4].lowercase()
             
             when (period) {
-                "pagi" -> if (hour == 12) hour = 0
-                "siang" -> if (hour < 12) hour += 12
-                "sore" -> if (hour < 12) hour += 12
-                "malam" -> if (hour < 12) hour += 12
+                "pagi", "am" -> if (hour == 12) hour = 0
+                "siang", "sore", "malam", "pm" -> if (hour < 12) hour += 12
             }
             
             calendar.set(Calendar.HOUR_OF_DAY, hour)
@@ -620,25 +698,28 @@ object VoiceParser {
         
         when {
             lowercasedText.contains("setiap hari") || lowercasedText.contains("tiap hari") || 
-            lowercasedText.contains("sehari-hari") || lowercasedText.contains("harian") -> {
+            lowercasedText.contains("sehari-hari") || lowercasedText.contains("harian") ||
+            lowercasedText.contains("every day") || lowercasedText.contains("daily") -> {
                 recurrenceType = "DAILY"
-                content = content.replace(Regex("""setiap hari|tiap hari|sehari-hari|harian""", RegexOption.IGNORE_CASE), "").trim()
+                content = content.replace(Regex("""setiap hari|tiap hari|sehari-hari|harian|every day|daily""", RegexOption.IGNORE_CASE), "").trim()
             }
             lowercasedText.contains("setiap minggu") || lowercasedText.contains("tiap minggu") || 
-            lowercasedText.contains("mingguan") || lowercasedText.contains("setiap week") -> {
+            lowercasedText.contains("mingguan") || lowercasedText.contains("setiap week") ||
+            lowercasedText.contains("every week") || lowercasedText.contains("weekly") -> {
                 recurrenceType = "WEEKLY"
-                content = content.replace(Regex("""setiap minggu|tiap minggu|mingguan|setiap week""", RegexOption.IGNORE_CASE), "").trim()
+                content = content.replace(Regex("""setiap minggu|tiap minggu|mingguan|setiap week|every week|weekly""", RegexOption.IGNORE_CASE), "").trim()
             }
             lowercasedText.contains("setiap bulan") || lowercasedText.contains("tiap bulan") || 
-            lowercasedText.contains("bulanan") || lowercasedText.contains("setiap tanggal") -> {
+            lowercasedText.contains("bulanan") || lowercasedText.contains("setiap tanggal") ||
+            lowercasedText.contains("every month") || lowercasedText.contains("monthly") -> {
                 recurrenceType = "MONTHLY"
-                content = content.replace(Regex("""setiap bulan|tiap bulan|bulanan|setiap tanggal""", RegexOption.IGNORE_CASE), "").trim()
+                content = content.replace(Regex("""setiap bulan|tiap bulan|bulanan|setiap tanggal|every month|monthly""", RegexOption.IGNORE_CASE), "").trim()
             }
         }
 
         return ParsedResult(
             category = Category.PENGINGAT,
-            keperluan = content.capitalizeWords(),
+            keperluan = content.capitalizeSentence(),
             total = 0,
             keterangan = "",
             reminderTime = calendar.timeInMillis,
@@ -679,7 +760,7 @@ object VoiceParser {
         
         return ParsedResult(
             category = Category.JURNAL,
-            keperluan = kegiatan.capitalizeWords(),
+            keperluan = kegiatan.capitalizeSentence(),
             total = 0,
             keterangan = "",
             reminderTime = 0
@@ -707,7 +788,7 @@ object VoiceParser {
         
         return ParsedResult(
             category = Category.MEMORY,
-            keperluan = content.capitalizeWords(),
+            keperluan = content.capitalizeSentence(),
             total = 0,
             keterangan = "",
             reminderTime = 0
@@ -720,27 +801,41 @@ object VoiceParser {
         var keterangan = ""
         var transactionDate = System.currentTimeMillis()
 
-        // Parse date first - "tanggal X bulan tahun"
-        val dateRegex = Regex("""tanggal\s+(\d{1,2})\s+(\w+)(?:\s+(\d{4}))?""")
-        val dateMatch = dateRegex.find(lowercasedText)
+        // Parse date first - "tanggal X bulan tahun" or "on Month X year"
+        val dateRegex = Regex("""(tanggal|on|at|date)?\s*(\d{1,2}(?:st|nd|rd|th)?|\w+)\s*(\d{1,2}(?:st|nd|rd|th)?|\w+)(?:\s+(\d{4}))?""", RegexOption.IGNORE_CASE)
+        val dateMatches = dateRegex.findAll(lowercasedText)
         var textWithoutDate = lowercasedText
         
-        if (dateMatch != null) {
-            val calendar = Calendar.getInstance()
-            val day = dateMatch.groupValues[1].toIntOrNull() ?: 1
-            val monthName = dateMatch.groupValues[2]
-            val year = dateMatch.groupValues[3].toIntOrNull() ?: calendar.get(Calendar.YEAR)
+        for (match in dateMatches) {
+            val val1 = match.groupValues[2].lowercase().replace(Regex("""st|nd|rd|th"""), "")
+            val val2 = match.groupValues[3].lowercase().replace(Regex("""st|nd|rd|th"""), "")
+            val yearStr = match.groupValues[4]
             
-            val month = monthNames[monthName] ?: calendar.get(Calendar.MONTH)
+            var day = -1
+            var month = -1
             
-            calendar.set(Calendar.DAY_OF_MONTH, day)
-            calendar.set(Calendar.MONTH, month)
-            calendar.set(Calendar.YEAR, year)
-            calendar.set(Calendar.HOUR_OF_DAY, 12)
-            calendar.set(Calendar.MINUTE, 0)
+            if (val1.toIntOrNull() != null && monthNames.containsKey(val2)) {
+                day = val1.toInt()
+                month = monthNames[val2]!!
+            } else if (monthNames.containsKey(val1) && val2.toIntOrNull() != null) {
+                month = monthNames[val1]!!
+                day = val2.toInt()
+            }
             
-            transactionDate = calendar.timeInMillis
-            textWithoutDate = lowercasedText.replace(dateRegex, "").trim()
+            if (day != -1 && month != -1) {
+                val calendar = Calendar.getInstance()
+                calendar.set(Calendar.DAY_OF_MONTH, day)
+                calendar.set(Calendar.MONTH, month)
+                if (yearStr.isNotEmpty()) {
+                    calendar.set(Calendar.YEAR, yearStr.toInt())
+                }
+                calendar.set(Calendar.HOUR_OF_DAY, 12)
+                calendar.set(Calendar.MINUTE, 0)
+                
+                transactionDate = calendar.timeInMillis
+                textWithoutDate = lowercasedText.replace(match.value, "").trim()
+                break
+            }
         }
 
         var totalKeyword = ""
@@ -815,9 +910,9 @@ object VoiceParser {
 
         return ParsedResult(
             category = Category.TRANSAKSI,
-            keperluan = keperluan.capitalizeWords(),
+            keperluan = keperluan.capitalizeSentence(),
             total = total,
-            keterangan = keterangan.capitalizeWords(),
+            keterangan = keterangan.capitalizeSentence(),
             reminderTime = 0,
             transactionDate = transactionDate,
             transactionCategory = CategoryDetector.detect(originalText).name
@@ -831,7 +926,9 @@ object VoiceParser {
         val trailingCurrencyPatterns = listOf(
             Regex("""\s+rp\.?$""", RegexOption.IGNORE_CASE),
             Regex("""\s+rupiah$""", RegexOption.IGNORE_CASE),
-            Regex("""\s+idr$""", RegexOption.IGNORE_CASE)
+            Regex("""\s+idr$""", RegexOption.IGNORE_CASE),
+            Regex("""\s+usd$""", RegexOption.IGNORE_CASE),
+            Regex("""\s+dollars?$""", RegexOption.IGNORE_CASE)
         )
         
         for (pattern in trailingCurrencyPatterns) {
@@ -851,8 +948,8 @@ object VoiceParser {
             var number = numberPart.toIntOrNull() ?: 0
             
             when (suffix) {
-                "ribu", "rb" -> number *= 1000
-                "juta", "jt" -> number *= 1000000
+                "ribu", "rb", "thousand" -> number *= 1000
+                "juta", "jt", "million" -> number *= 1000000
             }
             
             return number
@@ -906,14 +1003,19 @@ object VoiceParser {
                     currentNumber += number
                 }
             } else when (word) {
-                "ribu", "rb" -> {
+                "ribu", "rb", "thousand" -> {
                     currentNumber = if (currentNumber == 0) 1 else currentNumber
                     total += currentNumber * 1000
                     currentNumber = 0
                 }
-                "juta", "jt" -> {
+                "juta", "jt", "million" -> {
                     currentNumber = if (currentNumber == 0) 1 else currentNumber
                     total += currentNumber * 1_000_000
+                    currentNumber = 0
+                }
+                "billion" -> {
+                    currentNumber = if (currentNumber == 0) 1 else currentNumber
+                    total += currentNumber * 1_000_000_000
                     currentNumber = 0
                 }
                 "puluh" -> currentNumber *= 10
@@ -930,6 +1032,11 @@ object VoiceParser {
                 if (char.isLowerCase()) char.titlecase(Locale.ROOT) else char.toString() 
             }
         }
+
+    private fun String.capitalizeSentence(): String {
+        if (this.isEmpty()) return this
+        return this.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString() }
+    }
 }
 
 data class ParsedResult(

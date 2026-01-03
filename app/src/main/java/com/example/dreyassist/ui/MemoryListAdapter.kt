@@ -21,7 +21,7 @@ class MemoryListAdapter(
     private val onDelete: (MemoryEntity) -> Unit
 ) : ListAdapter<MemoryEntity, MemoryListAdapter.ViewHolder>(DiffCallback()) {
 
-    private val dateFormat = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale("id", "ID"))
+    private val dateFormat = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -41,7 +41,7 @@ class MemoryListAdapter(
 
         fun bind(item: MemoryEntity) {
             textTitle.text = item.content
-            textSubtitle.text = if (item.category.isNotBlank()) item.category else "Catatan"
+            textSubtitle.text = if (item.category.isNotBlank()) item.category else itemView.context.getString(R.string.menu_notes)
             textDate.text = dateFormat.format(Date(item.createdAt))
 
             // Card click for detail view

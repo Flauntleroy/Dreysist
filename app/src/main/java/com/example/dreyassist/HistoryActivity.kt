@@ -32,7 +32,7 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-class HistoryActivity : AppCompatActivity() {
+class HistoryActivity : BaseActivity() {
 
     private lateinit var binding: ActivityHistoryBinding
     private val database by lazy { AppDatabase.getDatabase(this) }
@@ -48,9 +48,9 @@ class HistoryActivity : AppCompatActivity() {
     private var filterStartDate: Long? = null
     private var filterEndDate: Long? = null
     
-    private val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale("id", "ID"))
-    private val fullDateFormat = SimpleDateFormat("EEEE, dd MMM yyyy • HH:mm", Locale("id", "ID"))
-    private val currencyFormat = NumberFormat.getCurrencyInstance(Locale("id", "ID")).apply {
+    private val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+    private val fullDateFormat = SimpleDateFormat("EEEE, dd MMM yyyy • HH:mm", Locale.getDefault())
+    private val currencyFormat = NumberFormat.getCurrencyInstance(Locale.getDefault()).apply {
         maximumFractionDigits = 0
     }
 
@@ -143,10 +143,10 @@ class HistoryActivity : AppCompatActivity() {
         )
 
         val typeLabel = when (item.type) {
-            ItemType.TRANSAKSI -> "Transaction"
-            ItemType.JURNAL -> "Journal"
-            ItemType.PENGINGAT -> "Reminder"
-            ItemType.MEMORY -> "Note"
+            ItemType.TRANSAKSI -> getString(R.string.menu_transaction).uppercase()
+            ItemType.JURNAL -> getString(R.string.menu_journal).uppercase()
+            ItemType.PENGINGAT -> getString(R.string.menu_reminder).uppercase()
+            ItemType.MEMORY -> getString(R.string.menu_notes).uppercase()
         }
         
         dialog.findViewById<TextView>(R.id.text_type_label).text = typeLabel
@@ -162,7 +162,7 @@ class HistoryActivity : AppCompatActivity() {
                 com.example.dreyassist.util.CategoryDetector.getCategoryIconResId(item.category)
             )
             dialog.findViewById<TextView>(R.id.text_category).text = 
-                com.example.dreyassist.util.CategoryDetector.getCategoryName(item.category)
+                com.example.dreyassist.util.CategoryDetector.getCategoryName(item.category, this)
         } else {
             containerCategory.visibility = View.GONE
         }
@@ -195,13 +195,13 @@ class HistoryActivity : AppCompatActivity() {
                 binding.textDateFilter.visibility = View.VISIBLE
                 
                 updateHistoryList()
-                Toast.makeText(this, "Filter applied", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.filter_applied), Toast.LENGTH_SHORT).show()
             }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).apply {
-                setTitle("Select End Date")
+                setTitle(getString(R.string.select_end_date))
                 show()
             }
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).apply {
-            setTitle("Select Start Date")
+            setTitle(getString(R.string.select_start_date))
             show()
         }
     }

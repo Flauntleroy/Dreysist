@@ -22,7 +22,7 @@ import com.example.dreyassist.ui.MainViewModel
 import com.example.dreyassist.ui.MainViewModelFactory
 import com.example.dreyassist.ui.MemoryListAdapter
 
-class MemoryListActivity : AppCompatActivity() {
+class MemoryListActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMemoryListBinding
     private val database by lazy { AppDatabase.getDatabase(this) }
@@ -72,11 +72,11 @@ class MemoryListActivity : AppCompatActivity() {
         val editCategory = dialog.findViewById<EditText>(R.id.edit_category)
 
         if (memory != null) {
-            title.text = "Edit Catatan"
+            title.text = getString(R.string.edit_memory)
             editContent.setText(memory.content)
             editCategory.setText(memory.category)
         } else {
-            title.text = "Tambah Catatan"
+            title.text = getString(R.string.add_memory)
         }
 
         dialog.findViewById<Button>(R.id.btn_cancel).setOnClickListener {
@@ -88,19 +88,19 @@ class MemoryListActivity : AppCompatActivity() {
             val category = editCategory.text.toString().trim()
 
             if (content.isEmpty()) {
-                Toast.makeText(this, "Catatan harus diisi", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.error_memory_empty), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             if (memory != null) {
                 viewModel.updateMemory(memory.copy(content = content, category = category))
-                Toast.makeText(this, "Catatan diperbarui", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.memory_updated), Toast.LENGTH_SHORT).show()
             } else {
                 viewModel.insertMemory(MemoryEntity(
                     content = content,
                     category = category
                 ))
-                Toast.makeText(this, "Catatan ditambahkan", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.memory_added), Toast.LENGTH_SHORT).show()
             }
             dialog.dismiss()
         }
@@ -110,13 +110,13 @@ class MemoryListActivity : AppCompatActivity() {
 
     private fun showDeleteConfirmation(memory: MemoryEntity) {
         AlertDialog.Builder(this)
-            .setTitle("Hapus Catatan")
-            .setMessage("Yakin ingin menghapus catatan ini?")
-            .setPositiveButton("Hapus") { _, _ ->
+            .setTitle(getString(R.string.delete_memory_title))
+            .setMessage(getString(R.string.delete_memory_message))
+            .setPositiveButton(getString(R.string.delete)) { _, _ ->
                 viewModel.deleteMemory(memory)
-                Toast.makeText(this, "Catatan dihapus", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.memory_deleted), Toast.LENGTH_SHORT).show()
             }
-            .setNegativeButton("Batal", null)
+            .setNegativeButton(getString(R.string.cancel), null)
             .show()
     }
 
@@ -130,11 +130,11 @@ class MemoryListActivity : AppCompatActivity() {
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
 
-        val fullDateFormat = java.text.SimpleDateFormat("EEEE, dd MMM yyyy • HH:mm", java.util.Locale("id", "ID"))
+        val fullDateFormat = java.text.SimpleDateFormat("EEEE, dd MMM yyyy • HH:mm", java.util.Locale.getDefault())
 
-        dialog.findViewById<TextView>(R.id.text_type_label).text = "CATATAN"
+        dialog.findViewById<TextView>(R.id.text_type_label).text = getString(R.string.menu_notes).uppercase()
         dialog.findViewById<TextView>(R.id.text_title).text = memory.content
-        dialog.findViewById<TextView>(R.id.text_subtitle).text = if (memory.category.isNotBlank()) memory.category else "Catatan"
+        dialog.findViewById<TextView>(R.id.text_subtitle).text = if (memory.category.isNotBlank()) memory.category else getString(R.string.menu_notes)
         dialog.findViewById<TextView>(R.id.text_date).text = fullDateFormat.format(java.util.Date(memory.createdAt))
 
         dialog.findViewById<Button>(R.id.btn_close).setOnClickListener {

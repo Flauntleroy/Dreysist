@@ -21,7 +21,7 @@ class JournalListAdapter(
     private val onDelete: (JournalEntity) -> Unit
 ) : ListAdapter<JournalEntity, JournalListAdapter.ViewHolder>(DiffCallback()) {
 
-    private val dateFormat = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale("id", "ID"))
+    private val dateFormat = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -41,7 +41,7 @@ class JournalListAdapter(
 
         fun bind(item: JournalEntity) {
             textTitle.text = item.kegiatan
-            textSubtitle.text = "Jurnal"
+            textSubtitle.text = itemView.context.getString(R.string.menu_journal)
             textDate.text = dateFormat.format(Date(item.tanggal))
 
             // Card click for detail view

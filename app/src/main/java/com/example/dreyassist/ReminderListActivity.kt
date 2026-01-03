@@ -29,7 +29,7 @@ import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-class ReminderListActivity : AppCompatActivity() {
+class ReminderListActivity : BaseActivity() {
 
     private lateinit var binding: ActivityReminderListBinding
     private val database by lazy { AppDatabase.getDatabase(this) }
@@ -39,7 +39,9 @@ class ReminderListActivity : AppCompatActivity() {
         MainViewModelFactory(database.transaksiDao(), database.journalDao(), database.reminderDao(), database.memoryDao())
     }
 
-    private val dateTimeFormat = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale("id", "ID"))
+    private val dateTimeFormat = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
+    private val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+    private val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
     private var selectedDateTime: Calendar = Calendar.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,35 +81,40 @@ class ReminderListActivity : AppCompatActivity() {
 
         val title = dialog.findViewById<TextView>(R.id.dialog_title)
         val editContent = dialog.findViewById<EditText>(R.id.edit_content)
-        val textDateTime = dialog.findViewById<TextView>(R.id.text_datetime)
-        val btnPickDateTime = dialog.findViewById<Button>(R.id.btn_pick_datetime)
+        val textDate = dialog.findViewById<TextView>(R.id.text_date)
+        val textTime = dialog.findViewById<TextView>(R.id.text_time)
+        val btnPickDate = dialog.findViewById<Button>(R.id.btn_pick_date)
+        val btnPickTime = dialog.findViewById<Button>(R.id.btn_pick_time)
 
         selectedDateTime = Calendar.getInstance()
 
         if (reminder != null) {
-            title.text = "Edit Pengingat"
+            title.text = getString(R.string.edit_reminder)
             editContent.setText(reminder.content)
             selectedDateTime.timeInMillis = reminder.reminderTime
         } else {
-            title.text = "Tambah Pengingat"
+            title.text = getString(R.string.add_reminder)
             selectedDateTime.add(Calendar.HOUR_OF_DAY, 1)
         }
 
-        textDateTime.text = dateTimeFormat.format(Date(selectedDateTime.timeInMillis))
+        textDate.text = dateFormat.format(Date(selectedDateTime.timeInMillis))
+        textTime.text = timeFormat.format(Date(selectedDateTime.timeInMillis))
 
-        btnPickDateTime.setOnClickListener {
+        btnPickDate.setOnClickListener {
             DatePickerDialog(this, { _, year, month, day ->
                 selectedDateTime.set(Calendar.YEAR, year)
                 selectedDateTime.set(Calendar.MONTH, month)
                 selectedDateTime.set(Calendar.DAY_OF_MONTH, day)
-                
-                TimePickerDialog(this, { _, hour, minute ->
-                    selectedDateTime.set(Calendar.HOUR_OF_DAY, hour)
-                    selectedDateTime.set(Calendar.MINUTE, minute)
-                    textDateTime.text = dateTimeFormat.format(Date(selectedDateTime.timeInMillis))
-                }, selectedDateTime.get(Calendar.HOUR_OF_DAY), selectedDateTime.get(Calendar.MINUTE), true).show()
-                
+                textDate.text = dateFormat.format(Date(selectedDateTime.timeInMillis))
             }, selectedDateTime.get(Calendar.YEAR), selectedDateTime.get(Calendar.MONTH), selectedDateTime.get(Calendar.DAY_OF_MONTH)).show()
+        }
+
+        btnPickTime.setOnClickListener {
+            TimePickerDialog(this, { _, hour, minute ->
+                selectedDateTime.set(Calendar.HOUR_OF_DAY, hour)
+                selectedDateTime.set(Calendar.MINUTE, minute)
+                textTime.text = timeFormat.format(Date(selectedDateTime.timeInMillis))
+            }, selectedDateTime.get(Calendar.HOUR_OF_DAY), selectedDateTime.get(Calendar.MINUTE), true).show()
         }
 
         dialog.findViewById<Button>(R.id.btn_cancel).setOnClickListener {
@@ -118,7 +125,7 @@ class ReminderListActivity : AppCompatActivity() {
             val content = editContent.text.toString().trim()
 
             if (content.isEmpty()) {
-                Toast.makeText(this, "Isi pengingat harus diisi", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.error_reminder_empty), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -130,7 +137,7 @@ class ReminderListActivity : AppCompatActivity() {
                 viewModel.updateReminder(updated)
                 ReminderScheduler.cancelReminder(this, reminder.id)
                 ReminderScheduler.scheduleReminder(this, reminder.id, content, selectedDateTime.timeInMillis)
-                Toast.makeText(this, "Pengingat diperbarui", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.reminder_updated), Toast.LENGTH_SHORT).show()
             } else {
                 val newReminder = ReminderEntity(
                     content = content,
@@ -139,7 +146,7 @@ class ReminderListActivity : AppCompatActivity() {
                 viewModel.insertReminder(newReminder) { id ->
                     ReminderScheduler.scheduleReminder(this, id.toInt(), content, selectedDateTime.timeInMillis)
                 }
-                Toast.makeText(this, "Pengingat ditambahkan", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.reminder_added), Toast.LENGTH_SHORT).show()
             }
             dialog.dismiss()
         }
@@ -149,14 +156,14 @@ class ReminderListActivity : AppCompatActivity() {
 
     private fun showDeleteConfirmation(reminder: ReminderEntity) {
         AlertDialog.Builder(this)
-            .setTitle("Hapus Pengingat")
-            .setMessage("Yakin ingin menghapus pengingat ini?")
-            .setPositiveButton("Hapus") { _, _ ->
+            .setTitle(getString(R.string.delete_reminder_title))
+            .setMessage(getString(R.string.delete_reminder_message))
+            .setPositiveButton(getString(R.string.delete)) { _, _ ->
                 ReminderScheduler.cancelReminder(this, reminder.id)
                 viewModel.deleteReminder(reminder)
-                Toast.makeText(this, "Pengingat dihapus", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.reminder_deleted), Toast.LENGTH_SHORT).show()
             }
-            .setNegativeButton("Batal", null)
+            .setNegativeButton(getString(R.string.cancel), null)
             .show()
     }
 
@@ -170,11 +177,11 @@ class ReminderListActivity : AppCompatActivity() {
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
 
-        val fullDateFormat = java.text.SimpleDateFormat("EEEE, dd MMM yyyy • HH:mm", java.util.Locale("id", "ID"))
+        val fullDateFormat = java.text.SimpleDateFormat("EEEE, dd MMM yyyy • HH:mm", Locale.getDefault())
 
-        dialog.findViewById<TextView>(R.id.text_type_label).text = "PENGINGAT"
+        dialog.findViewById<TextView>(R.id.text_type_label).text = getString(R.string.menu_reminder).uppercase()
         dialog.findViewById<TextView>(R.id.text_title).text = reminder.content
-        dialog.findViewById<TextView>(R.id.text_subtitle).text = if (reminder.isCompleted) "Selesai" else "Aktif"
+        dialog.findViewById<TextView>(R.id.text_subtitle).text = if (reminder.isCompleted) getString(R.string.status_completed) else getString(R.string.status_active)
         dialog.findViewById<TextView>(R.id.text_date).text = fullDateFormat.format(Date(reminder.reminderTime))
 
         dialog.findViewById<Button>(R.id.btn_close).setOnClickListener {

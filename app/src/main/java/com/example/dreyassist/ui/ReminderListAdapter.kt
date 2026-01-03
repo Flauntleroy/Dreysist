@@ -21,7 +21,7 @@ class ReminderListAdapter(
     private val onDelete: (ReminderEntity) -> Unit
 ) : ListAdapter<ReminderEntity, ReminderListAdapter.ViewHolder>(DiffCallback()) {
 
-    private val dateFormat = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale("id", "ID"))
+    private val dateFormat = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -41,7 +41,7 @@ class ReminderListAdapter(
 
         fun bind(item: ReminderEntity) {
             textTitle.text = item.content
-            textSubtitle.text = if (item.isCompleted) "Selesai" else "Aktif"
+            textSubtitle.text = if (item.isCompleted) itemView.context.getString(R.string.status_completed) else itemView.context.getString(R.string.status_active)
             textDate.text = dateFormat.format(Date(item.reminderTime))
 
             // Card click for detail view

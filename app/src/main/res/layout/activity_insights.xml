@@ -23,13 +23,13 @@
             android:background="@drawable/bg_input_glass"
             android:src="@drawable/ic_back"
             android:scaleType="center"
-            android:contentDescription="Back" />
+            android:contentDescription="@string/back" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Insights"
+            android:text="@string/insights_title"
             android:textColor="@color/text_primary"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -75,7 +75,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Today"
+                            android:text="@string/today"
                             android:textColor="@color/accent_cyan"
                             android:textSize="14sp"
                             android:textStyle="bold"
@@ -94,7 +94,7 @@
                             android:id="@+id/text_spending_insight"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Belum ada pengeluaran hari ini."
+                            android:text="@string/no_spending_today"
                             android:textColor="@color/text_secondary"
                             android:textSize="14sp"
                             android:layout_marginTop="8dp" />
@@ -103,7 +103,7 @@
                             android:id="@+id/text_today_stats"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0 transaksi • 0 jurnal • 0 pengingat"
+                            android:text="@string/no_data_yet"
                             android:textColor="@color/text_hint"
                             android:textSize="12sp"
                             android:layout_marginTop="12dp" />
@@ -122,7 +122,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="This Week"
+                            android:text="@string/this_week"
                             android:textColor="@color/accent_cyan"
                             android:textSize="14sp"
                             android:textStyle="bold"
@@ -141,7 +141,7 @@
                             android:id="@+id/text_week_insight"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Minggu ini belum ada data."
+                            android:text="@string/no_week_data"
                             android:textColor="@color/text_secondary"
                             android:textSize="14sp"
                             android:layout_marginTop="8dp" />
@@ -150,7 +150,7 @@
                             android:id="@+id/text_week_stats"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0 transaksi"
+                            android:text="@string/no_data_yet"
                             android:textColor="@color/text_hint"
                             android:textSize="12sp"
                             android:layout_marginTop="12dp" />
@@ -168,7 +168,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="This Month"
+                            android:text="@string/this_month"
                             android:textColor="@color/accent_cyan"
                             android:textSize="14sp"
                             android:textStyle="bold"
@@ -187,7 +187,7 @@
                             android:id="@+id/text_month_insight"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Bulan ini belum ada data."
+                            android:text="@string/no_month_data"
                             android:textColor="@color/text_secondary"
                             android:textSize="14sp"
                             android:layout_marginTop="8dp" />
@@ -196,7 +196,7 @@
                             android:id="@+id/text_month_stats"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0 transaksi"
+                            android:text="@string/no_data_yet"
                             android:textColor="@color/text_hint"
                             android:textSize="12sp"
                             android:layout_marginTop="12dp" />
@@ -248,7 +248,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Ringkasan"
+                    android:text="@string/summary"
                     android:textColor="@color/text_hint"
                     android:textSize="11sp"
                     android:letterSpacing="0.1"
@@ -259,7 +259,7 @@
                     android:id="@+id/text_category_narrative"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Belum ada data kategori."
+                    android:text="@string/no_category_data"
                     android:textColor="@color/text_secondary"
                     android:textSize="14sp"
                     android:lineSpacingExtra="4dp" />
@@ -278,7 +278,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Top Categories"
+                    android:text="@string/top_categories"
                     android:textColor="@color/accent_cyan"
                     android:textSize="14sp"
                     android:textStyle="bold"

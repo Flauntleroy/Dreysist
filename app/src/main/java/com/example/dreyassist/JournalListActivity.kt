@@ -22,7 +22,7 @@ import com.example.dreyassist.ui.JournalListAdapter
 import com.example.dreyassist.ui.MainViewModel
 import com.example.dreyassist.ui.MainViewModelFactory
 
-class JournalListActivity : AppCompatActivity() {
+class JournalListActivity : BaseActivity() {
 
     private lateinit var binding: ActivityJournalListBinding
     private val database by lazy { AppDatabase.getDatabase(this) }
@@ -71,10 +71,10 @@ class JournalListActivity : AppCompatActivity() {
         val editKegiatan = dialog.findViewById<EditText>(R.id.edit_kegiatan)
 
         if (journal != null) {
-            title.text = "Edit Jurnal"
+            title.text = getString(R.string.edit_journal)
             editKegiatan.setText(journal.kegiatan)
         } else {
-            title.text = "Tambah Jurnal"
+            title.text = getString(R.string.add_journal)
         }
 
         dialog.findViewById<Button>(R.id.btn_cancel).setOnClickListener {
@@ -85,19 +85,19 @@ class JournalListActivity : AppCompatActivity() {
             val kegiatan = editKegiatan.text.toString().trim()
 
             if (kegiatan.isEmpty()) {
-                Toast.makeText(this, "Kegiatan harus diisi", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.error_journal_empty), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
             if (journal != null) {
                 viewModel.updateJournal(journal.copy(kegiatan = kegiatan))
-                Toast.makeText(this, "Jurnal diperbarui", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.journal_updated), Toast.LENGTH_SHORT).show()
             } else {
                 viewModel.insertJournal(JournalEntity(
                     tanggal = System.currentTimeMillis(),
                     kegiatan = kegiatan
                 ))
-                Toast.makeText(this, "Jurnal ditambahkan", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.journal_added), Toast.LENGTH_SHORT).show()
             }
             dialog.dismiss()
         }
@@ -107,13 +107,13 @@ class JournalListActivity : AppCompatActivity() {
 
     private fun showDeleteConfirmation(journal: JournalEntity) {
         AlertDialog.Builder(this)
-            .setTitle("Hapus Jurnal")
-            .setMessage("Yakin ingin menghapus jurnal ini?")
-            .setPositiveButton("Hapus") { _, _ ->
+            .setTitle(getString(R.string.delete_journal_title))
+            .setMessage(getString(R.string.delete_journal_message))
+            .setPositiveButton(getString(R.string.delete)) { _, _ ->
                 viewModel.deleteJournal(journal)
-                Toast.makeText(this, "Jurnal dihapus", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.journal_deleted), Toast.LENGTH_SHORT).show()
             }
-            .setNegativeButton("Batal", null)
+            .setNegativeButton(getString(R.string.cancel), null)
             .show()
     }
 
@@ -127,11 +127,11 @@ class JournalListActivity : AppCompatActivity() {
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
 
-        val fullDateFormat = java.text.SimpleDateFormat("EEEE, dd MMM yyyy • HH:mm", java.util.Locale("id", "ID"))
+        val fullDateFormat = java.text.SimpleDateFormat("EEEE, dd MMM yyyy • HH:mm", java.util.Locale.getDefault())
 
-        dialog.findViewById<TextView>(R.id.text_type_label).text = "JURNAL"
+        dialog.findViewById<TextView>(R.id.text_type_label).text = getString(R.string.menu_journal).uppercase()
         dialog.findViewById<TextView>(R.id.text_title).text = journal.kegiatan
-        dialog.findViewById<TextView>(R.id.text_subtitle).text = "Catatan kegiatan"
+        dialog.findViewById<TextView>(R.id.text_subtitle).text = getString(R.string.journal_subtitle)
         dialog.findViewById<TextView>(R.id.text_date).text = fullDateFormat.format(java.util.Date(journal.tanggal))
 
         dialog.findViewById<Button>(R.id.btn_close).setOnClickListener {

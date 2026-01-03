@@ -24,10 +24,10 @@ class TransaksiListAdapter(
     private val onDelete: (TransaksiEntity) -> Unit
 ) : ListAdapter<TransaksiEntity, TransaksiListAdapter.ViewHolder>(DiffCallback()) {
 
-    private val currencyFormat = NumberFormat.getCurrencyInstance(Locale("id", "ID")).apply {
+    private val currencyFormat = NumberFormat.getCurrencyInstance(Locale.getDefault()).apply {
         maximumFractionDigits = 0
     }
-    private val dateFormat = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale("id", "ID"))
+    private val dateFormat = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)

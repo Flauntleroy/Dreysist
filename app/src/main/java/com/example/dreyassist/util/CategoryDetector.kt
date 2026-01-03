@@ -8,16 +8,16 @@ import java.util.Locale
  */
 object CategoryDetector {
 
-    enum class Category(val displayName: String, val iconResId: Int) {
-        TRANSPORT("Transport", R.drawable.ic_category_transport),
-        FOOD("Food", R.drawable.ic_category_food),
-        GROCERIES("Groceries", R.drawable.ic_category_groceries),
-        SHOPPING("Shopping", R.drawable.ic_category_shopping),
-        BILLS("Bills", R.drawable.ic_category_bills),
-        ENTERTAINMENT("Entertainment", R.drawable.ic_category_entertainment),
-        HEALTH("Health", R.drawable.ic_category_health),
-        EDUCATION("Education", R.drawable.ic_category_education),
-        OTHER("Other", R.drawable.ic_category_other)
+    enum class Category(val displayName: String, val iconResId: Int, val stringResId: Int) {
+        TRANSPORT("Transport", R.drawable.ic_category_transport, R.string.cat_transport),
+        FOOD("Food", R.drawable.ic_category_food, R.string.cat_food),
+        GROCERIES("Groceries", R.drawable.ic_category_groceries, R.string.cat_groceries),
+        SHOPPING("Shopping", R.drawable.ic_category_shopping, R.string.cat_shopping),
+        BILLS("Bills", R.drawable.ic_category_bills, R.string.cat_bills),
+        ENTERTAINMENT("Entertainment", R.drawable.ic_category_entertainment, R.string.cat_entertainment),
+        HEALTH("Health", R.drawable.ic_category_health, R.string.cat_health),
+        EDUCATION("Education", R.drawable.ic_category_education, R.string.cat_education),
+        OTHER("Other", R.drawable.ic_category_other, R.string.cat_other)
     }
 
     private val categoryKeywords = mapOf(
@@ -171,9 +171,10 @@ object CategoryDetector {
     /**
      * Get category display name
      */
-    fun getCategoryName(categoryString: String): String {
+    fun getCategoryName(categoryString: String, context: android.content.Context? = null): String {
         return try {
-            Category.valueOf(categoryString).displayName
+            val category = Category.valueOf(categoryString)
+            context?.getString(category.stringResId) ?: category.displayName
         } catch (e: Exception) {
             categoryString
         }

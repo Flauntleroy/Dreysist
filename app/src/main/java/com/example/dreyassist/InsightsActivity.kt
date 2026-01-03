@@ -17,17 +17,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-class InsightsActivity : AppCompatActivity() {
+class InsightsActivity : BaseActivity() {
 
     private lateinit var binding: ActivityInsightsBinding
     private val database by lazy { AppDatabase.getDatabase(this) }
     
-    private val currencyFormat = NumberFormat.getCurrencyInstance(Locale("id", "ID")).apply {
+    private val currencyFormat = NumberFormat.getCurrencyInstance(Locale.getDefault()).apply {
         maximumFractionDigits = 0
     }
+    private val monthFormat = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -123,35 +125,35 @@ class InsightsActivity : AppCompatActivity() {
                     // Update Today card
                     binding.textTodaySpending.text = currencyFormat.format(todaySpending)
                     binding.textSpendingInsight.text = generateTodayNarrative(todaySpending, avgSpending)
-                    binding.textTodayStats.text = "$todayTransactions transaksi • $todayJournals jurnal • $activeReminders pengingat"
+                    binding.textTodayStats.text = getString(R.string.transaction_journal_reminder_stats, todayTransactions, todayJournals, activeReminders)
                     
                     // Update Week card
                     binding.textWeekSpending.text = currencyFormat.format(weekSpending)
                     binding.textWeekInsight.text = generateWeekNarrative(weekSpending, weekTransactions)
-                    binding.textWeekStats.text = "$weekTransactions transaksi"
+                    binding.textWeekStats.text = getString(R.string.transaction_stats_format, weekTransactions)
                     
                     // Update Month card
                     binding.textMonthSpending.text = currencyFormat.format(monthSpending)
                     binding.textMonthInsight.text = generateMonthNarrative(monthSpending, monthTransactions, avgSpending)
-                    binding.textMonthStats.text = "$monthTransactions transaksi"
+                    binding.textMonthStats.text = getString(R.string.transaction_stats_format, monthTransactions)
                     
                     // Generate Category Narrative
                     if (categoryStats.isNotEmpty()) {
                         val topCategory = categoryStats.first()
-                        val categoryName = CategoryDetector.getCategoryName(topCategory.category)
-                        binding.textCategoryNarrative.text = "$categoryName masih jadi kategori terbesar bulan ini."
+                        val categoryName = CategoryDetector.getCategoryName(topCategory.category, this@InsightsActivity)
+                        binding.textCategoryNarrative.text = getString(R.string.category_stats_format, categoryName)
                     } else {
-                        binding.textCategoryNarrative.text = "Belum ada data kategori."
+                        binding.textCategoryNarrative.text = getString(R.string.no_category_data)
                     }
                     
                     // Update categories list
                     binding.containerCategories.removeAllViews()
                     if (categoryStats.isEmpty()) {
-                        addCategoryRow(R.drawable.ic_category_other, "Belum ada transaksi", "", 0)
+                        addCategoryRow(R.drawable.ic_category_other, getString(R.string.no_spending_today), "", 0)
                     } else {
                         categoryStats.take(5).forEach { stat ->
                             val iconResId = CategoryDetector.getCategoryIconResId(stat.category)
-                            val name = CategoryDetector.getCategoryName(stat.category)
+                            val name = CategoryDetector.getCategoryName(stat.category, this@InsightsActivity)
                             addCategoryRow(iconResId, name, currencyFormat.format(stat.total), stat.count)
                         }
                     }
@@ -162,21 +164,21 @@ class InsightsActivity : AppCompatActivity() {
 
     private fun generateTodayNarrative(spending: Int, avgSpending: Int): String {
         return when {
-            spending == 0 -> "Belum ada pengeluaran hari ini."
-            avgSpending == 0 -> "Mulai hari dengan ${currencyFormat.format(spending)}."
-            spending < avgSpending * 0.5 -> "Pengeluaran ringan, jauh di bawah rata-rata."
-            spending < avgSpending -> "Pengeluaran normal, di bawah rata-rata."
-            spending < avgSpending * 1.5 -> "Sedikit di atas rata-rata harianmu."
-            else -> "Hari yang sibuk untuk dompetmu!"
+            spending == 0 -> getString(R.string.no_spending_today)
+            avgSpending == 0 -> getString(R.string.spending_start_day, currencyFormat.format(spending))
+            spending < avgSpending * 0.5 -> getString(R.string.spending_way_under_avg)
+            spending < avgSpending -> getString(R.string.spending_under_avg)
+            spending < avgSpending * 1.5 -> getString(R.string.spending_above_avg)
+            else -> getString(R.string.spending_way_above_avg)
         }
     }
 
     private fun generateWeekNarrative(spending: Int, transactions: Int): String {
         return when {
-            spending == 0 -> "Minggu ini belum ada pengeluaran."
-            transactions <= 3 -> "Minggu tenang dengan $transactions transaksi."
-            transactions <= 7 -> "Minggu normal dengan $transactions transaksi."
-            else -> "Minggu yang cukup aktif."
+            spending == 0 -> getString(R.string.no_week_data)
+            transactions <= 3 -> getString(R.string.week_quiet, transactions)
+            transactions <= 7 -> getString(R.string.week_normal, transactions)
+            else -> getString(R.string.week_active)
         }
     }
 
@@ -185,11 +187,11 @@ class InsightsActivity : AppCompatActivity() {
         val expectedSpending = avgDaily * dayOfMonth
         
         return when {
-            spending == 0 -> "Bulan ini belum ada pengeluaran."
-            expectedSpending == 0 -> "Total $transactions transaksi bulan ini."
-            spending < expectedSpending * 0.8 -> "Bulan ini pengeluaranmu stabil."
-            spending > expectedSpending * 1.2 -> "Bulan ini pengeluaran agak tinggi."
-            else -> "Sesuai dengan kebiasaanmu."
+            spending == 0 -> getString(R.string.no_month_data)
+            expectedSpending == 0 -> getString(R.string.month_total_stats, transactions)
+            spending < expectedSpending * 0.8 -> getString(R.string.month_stable)
+            spending > expectedSpending * 1.2 -> getString(R.string.month_high)
+            else -> getString(R.string.month_habit)
         }
     }
 
@@ -198,7 +200,7 @@ class InsightsActivity : AppCompatActivity() {
         row.findViewById<android.widget.ImageView>(R.id.img_category_icon).setImageResource(iconResId)
         row.findViewById<TextView>(R.id.text_category_name).text = name
         row.findViewById<TextView>(R.id.text_category_amount).text = amount
-        row.findViewById<TextView>(R.id.text_category_count).text = if (count > 0) "$count items" else ""
+        row.findViewById<TextView>(R.id.text_category_count).text = if (count > 0) getString(R.string.items_count_format, count) else ""
         binding.containerCategories.addView(row)
     }
 

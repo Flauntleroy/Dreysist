@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -23,13 +24,13 @@
             android:background="@drawable/bg_input_glass"
             android:src="@drawable/ic_back"
             android:scaleType="center"
-            android:contentDescription="Back" />
+            android:contentDescription="@string/back" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="About Dreysist"
+            android:text="@string/about_title" 
             android:textColor="@color/text_primary"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -68,10 +69,64 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="Your Personal Voice Assistant"
+                android:text="@string/app_subtitle"
                 android:textColor="@color/text_hint"
                 android:textSize="14sp"
                 android:layout_marginBottom="24dp" />
+
+            <!-- Language Selection -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_glass_card"
+                android:padding="20dp"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/choose_language"
+                    android:textColor="@color/accent_cyan"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="16dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_lang_id"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="48dp"
+                        android:backgroundTint="@color/glass_input"
+                        android:text="Indonesia"
+                        android:textColor="@color/text_primary"
+                        android:textAllCaps="false"
+                        app:cornerRadius="12dp"
+                        app:strokeColor="@color/accent_cyan"
+                        app:strokeWidth="0dp"
+                        android:layout_marginEnd="8dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_lang_en"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="48dp"
+                        android:backgroundTint="@color/glass_input"
+                        android:text="English"
+                        android:textColor="@color/text_primary"
+                        android:textAllCaps="false"
+                        app:cornerRadius="12dp"
+                        app:strokeColor="@color/accent_cyan"
+                        app:strokeWidth="0dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
 
             <!-- Voice Commands Section -->
             <LinearLayout
@@ -85,7 +140,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Voice Commands"
+                    android:text="@string/voice_commands"
                     android:textColor="@color/accent_cyan"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -95,7 +150,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="TRANSACTION"
+                    android:text="@string/category_transaction"
                     android:textColor="#00D4FF"
                     android:textSize="14sp"
                     android:textStyle="bold"
@@ -114,7 +169,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="JOURNAL"
+                    android:text="@string/category_journal"
                     android:textColor="#00D4FF"
                     android:textSize="14sp"
                     android:textStyle="bold"
@@ -133,7 +188,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="REMINDER"
+                    android:text="@string/category_reminder"
                     android:textColor="#00D4FF"
                     android:textSize="14sp"
                     android:textStyle="bold"
@@ -152,7 +207,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="NOTES"
+                    android:text="@string/category_notes"
                     android:textColor="#00D4FF"
                     android:textSize="14sp"
                     android:textStyle="bold"
@@ -180,7 +235,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Ask Questions (REMEMBER)"
+                    android:text="@string/ask_questions"
                     android:textColor="@color/accent_cyan"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -190,7 +245,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="SPENDING"
+                    android:text="@string/category_spending"
                     android:textColor="#00D4FF"
                     android:textSize="14sp"
                     android:textStyle="bold"
@@ -247,7 +302,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="SEARCH"
+                    android:text="@string/category_search"
                     android:textColor="#00D4FF"
                     android:textSize="14sp"
                     android:textStyle="bold"
@@ -274,7 +329,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Keywords"
+                    android:text="@string/keywords"
                     android:textColor="@color/accent_cyan"
                     android:textSize="16sp"
                     android:textStyle="bold"
