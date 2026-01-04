@@ -87,6 +87,23 @@
             android:textColor="@color/text_secondary"
             android:textSize="14sp"
             android:layout_marginTop="4dp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Pengulangan -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/recurrence"
+            android:textColor="@color/text_hint"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/text_recurrence"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/accent_cyan"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp"
             android:layout_marginBottom="24dp" />
 
         <!-- Buttons -->

@@ -3,6 +3,7 @@ package com.example.dreyassist.widget
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
@@ -53,5 +54,16 @@ class DreysistWidget : AppWidgetProvider() {
 
             appWidgetManager.updateAppWidget(appWidgetId, views)
         }
+
+        fun updateAllWidgets(context: Context) {
+            val appWidgetManager = AppWidgetManager.getInstance(context)
+            val widgetIds = appWidgetManager.getAppWidgetIds(
+                ComponentName(context, DreysistWidget::class.java)
+            )
+            for (widgetId in widgetIds) {
+                updateAppWidget(context, appWidgetManager, widgetId)
+            }
+        }
     }
 }
+

@@ -188,4 +188,24 @@
     <string name="error_timeout">Waktu habis, coba lagi</string>
     <string name="please_speak">Silakan bicara...</string>
     <string name="error_occurred">Maaf, terjadi error: %s</string>
+    
+    <!-- Recurrence -->
+    <string name="recurrence">Pengulangan</string>
+    <string name="recurrence_none">Tidak Berulang</string>
+    <string name="recurrence_daily">Setiap Hari</string>
+    <string name="recurrence_weekly">Setiap Minggu</string>
+    <string name="recurrence_monthly">Setiap Bulan</string>
+    
+    <!-- Tabs -->
+    <string name="tab_pending">Belum Selesai</string>
+    <string name="tab_completed">Selesai</string>
+    <string name="mark_complete">Tandai Selesai</string>
+    <string name="mark_pending">Tandai Belum Selesai</string>
+    
+    <!-- Widget Insights -->
+    <string name="pending_reminders">Pengingat Aktif</string>
+    <string name="insight_reminders">Ada %d pengingat menunggumu</string>
+    <string name="insight_journals">Sudah mencatat %d kegiatan hari ini</string>
+    <string name="insight_notes">%d catatan tersimpan</string>
+    <string name="insight_start_day">Mulai hari ini dengan produktif!</string>
 </resources>

@@ -60,6 +60,21 @@
 
         </LinearLayout>
 
+        <!-- Tab Layout for Complete/Incomplete -->
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="8dp"
+            android:background="@android:color/transparent"
+            app:tabMode="fixed"
+            app:tabGravity="fill"
+            app:tabTextColor="@color/text_hint"
+            app:tabSelectedTextColor="@color/accent_cyan"
+            app:tabIndicatorColor="@color/accent_cyan"
+            app:tabIndicatorHeight="2dp" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"

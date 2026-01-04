@@ -775,6 +775,15 @@ class MainActivity : BaseActivity() {
             if (content.isNotBlank()) content else "-"
         dialog.findViewById<TextView>(R.id.text_date).text = dateFormat.format(Date(reminderTime))
         dialog.findViewById<TextView>(R.id.text_time).text = timeFormat.format(Date(reminderTime))
+        
+        // Display recurrence
+        val recurrenceLabel = when (recurrenceType) {
+            "DAILY" -> getString(R.string.recurrence_daily)
+            "WEEKLY" -> getString(R.string.recurrence_weekly)
+            "MONTHLY" -> getString(R.string.recurrence_monthly)
+            else -> getString(R.string.recurrence_none)
+        }
+        dialog.findViewById<TextView>(R.id.text_recurrence).text = recurrenceLabel
 
         // Close button (X)
         dialog.findViewById<android.widget.ImageButton>(R.id.btn_close).setOnClickListener {
@@ -803,7 +812,6 @@ class MainActivity : BaseActivity() {
                         reminderTime
                     )
                 }
-                val recurrenceText = if (recurrenceType != "NONE") " (${recurrenceType.lowercase()})" else ""
                 Toast.makeText(this, getString(R.string.reminder_saved), Toast.LENGTH_SHORT).show()
                 dialog.dismiss()
             } else {
@@ -827,6 +835,7 @@ class MainActivity : BaseActivity() {
         val editContent = dialog.findViewById<android.widget.EditText>(R.id.edit_content)
         val textDate = dialog.findViewById<TextView>(R.id.text_date)
         val textTime = dialog.findViewById<TextView>(R.id.text_time)
+        val spinnerRecurrence = dialog.findViewById<android.widget.Spinner>(R.id.spinner_recurrence)
         
         editContent.setText(initialContent)
         
@@ -835,6 +844,24 @@ class MainActivity : BaseActivity() {
         
         textDate.text = dateFormat.format(Date(calendar.timeInMillis))
         textTime.text = timeFormat.format(Date(calendar.timeInMillis))
+        
+        // Setup recurrence spinner
+        val recurrenceTypes = listOf("NONE", "DAILY", "WEEKLY", "MONTHLY")
+        val recurrenceLabels = listOf(
+            getString(R.string.recurrence_none),
+            getString(R.string.recurrence_daily),
+            getString(R.string.recurrence_weekly),
+            getString(R.string.recurrence_monthly)
+        )
+        val recurrenceAdapter = android.widget.ArrayAdapter(this, android.R.layout.simple_spinner_item, recurrenceLabels)
+        recurrenceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerRecurrence.adapter = recurrenceAdapter
+        
+        // Set current recurrence selection
+        val recurrenceIndex = recurrenceTypes.indexOf(recurrenceType)
+        if (recurrenceIndex >= 0) {
+            spinnerRecurrence.setSelection(recurrenceIndex)
+        }
 
         dialog.findViewById<Button>(R.id.btn_pick_date).setOnClickListener {
             DatePickerDialog(this, { _, year, month, day ->
@@ -860,9 +887,12 @@ class MainActivity : BaseActivity() {
 
         dialog.findViewById<Button>(R.id.btn_save).setOnClickListener {
             val content = editContent.text.toString().trim()
+            val selectedRecurrenceIndex = spinnerRecurrence.selectedItemPosition
+            val newRecurrenceType = recurrenceTypes[selectedRecurrenceIndex]
+            
             if (content.isNotBlank()) {
                 dialog.dismiss()
-                showReminderPreviewDialog(content, calendar.timeInMillis, recurrenceType, recurrenceInterval)
+                showReminderPreviewDialog(content, calendar.timeInMillis, newRecurrenceType, recurrenceInterval)
             } else {
                 Toast.makeText(this, getString(R.string.error_reminder_empty), Toast.LENGTH_SHORT).show()
             }

@@ -32,4 +32,7 @@ interface MemoryDao {
 
     @Query("SELECT * FROM memory WHERE category = :category ORDER BY createdAt DESC")
     fun getByCategory(category: String): Flow<List<MemoryEntity>>
+    
+    @Query("SELECT COUNT(*) FROM memory")
+    suspend fun getCount(): Int
 }

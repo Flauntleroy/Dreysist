@@ -18,7 +18,8 @@ import java.util.Locale
 class ReminderListAdapter(
     private val onClick: (ReminderEntity) -> Unit,
     private val onEdit: (ReminderEntity) -> Unit,
-    private val onDelete: (ReminderEntity) -> Unit
+    private val onDelete: (ReminderEntity) -> Unit,
+    private val onToggleStatus: (ReminderEntity) -> Unit
 ) : ListAdapter<ReminderEntity, ReminderListAdapter.ViewHolder>(DiffCallback()) {
 
     private val dateFormat = SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault())
@@ -51,8 +52,21 @@ class ReminderListAdapter(
             btnMore.setOnClickListener { view ->
                 val popup = PopupMenu(view.context, view)
                 popup.menuInflater.inflate(R.menu.menu_item_actions, popup.menu)
+                
+                // Update toggle status menu title based on current status
+                val toggleItem = popup.menu.findItem(R.id.action_toggle_status)
+                toggleItem.title = if (item.isCompleted) {
+                    view.context.getString(R.string.mark_pending)
+                } else {
+                    view.context.getString(R.string.mark_complete)
+                }
+                
                 popup.setOnMenuItemClickListener { menuItem ->
                     when (menuItem.itemId) {
+                        R.id.action_toggle_status -> {
+                            onToggleStatus(item)
+                            true
+                        }
                         R.id.action_edit -> {
                             onEdit(item)
                             true

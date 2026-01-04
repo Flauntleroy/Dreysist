@@ -27,13 +27,17 @@
     <EditText
         android:id="@+id/edit_content"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        android:minLines="1"
+        android:maxLines="6"
         android:background="@drawable/bg_input_glass"
         android:paddingHorizontal="12dp"
+        android:paddingVertical="12dp"
         android:textColor="@color/text_primary"
         android:textColorHint="@color/text_hint"
         android:hint="Apa yang ingin diingatkan?"
-        android:inputType="text"
+        android:inputType="textMultiLine|textCapSentences"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="12dp" />
 
@@ -88,7 +92,7 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:layout_marginTop="4dp"
-        android:layout_marginBottom="20dp">
+        android:layout_marginBottom="12dp">
 
         <TextView
             android:id="@+id/text_time"
@@ -110,6 +114,31 @@
             android:paddingHorizontal="16dp" />
 
     </LinearLayout>
+
+    <!-- Pengulangan -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/recurrence"
+        android:textColor="@color/text_hint"
+        android:textSize="12sp" />
+
+    <Spinner
+        android:id="@+id/spinner_recurrence"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/bg_input_glass"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp" />
+    
+    <TextView
+        android:id="@+id/text_recurrence_hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Pengulangan akan mengikuti tanggal yang dipilih di atas"
+        android:textColor="@color/text_hint"
+        android:textSize="10sp"
+        android:layout_marginBottom="16dp" />
 
     <!-- Buttons -->
     <LinearLayout

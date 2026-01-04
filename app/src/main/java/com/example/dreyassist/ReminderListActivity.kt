@@ -7,14 +7,15 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Window
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dreyassist.data.AppDatabase
@@ -24,6 +25,7 @@ import com.example.dreyassist.notification.ReminderScheduler
 import com.example.dreyassist.ui.MainViewModel
 import com.example.dreyassist.ui.MainViewModelFactory
 import com.example.dreyassist.ui.ReminderListAdapter
+import com.google.android.material.tabs.TabLayout
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -43,6 +45,12 @@ class ReminderListActivity : BaseActivity() {
     private val dateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
     private val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
     private var selectedDateTime: Calendar = Calendar.getInstance()
+    
+    private var allReminders: List<ReminderEntity> = emptyList()
+    private var currentTabPosition = 0 // 0 = Pending, 1 = Completed
+    
+    // Recurrence types
+    private val recurrenceTypes = listOf("NONE", "DAILY", "WEEKLY", "MONTHLY")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,17 +64,57 @@ class ReminderListActivity : BaseActivity() {
         binding.btnBack.setOnClickListener { finish() }
         binding.btnAdd.setOnClickListener { showEditDialog(null) }
 
+        // Setup TabLayout
+        setupTabs()
+
         adapter = ReminderListAdapter(
             onClick = { showDetailDialog(it) },
             onEdit = { showEditDialog(it) },
-            onDelete = { showDeleteConfirmation(it) }
+            onDelete = { showDeleteConfirmation(it) },
+            onToggleStatus = { toggleReminderStatus(it) }
         )
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
 
         viewModel.allReminders.observe(this) { list ->
-            adapter.submitList(list)
+            allReminders = list ?: emptyList()
+            filterReminders()
         }
+    }
+    
+    private fun setupTabs() {
+        binding.tabLayout.addTab(binding.tabLayout.newTab().setText(R.string.tab_pending))
+        binding.tabLayout.addTab(binding.tabLayout.newTab().setText(R.string.tab_completed))
+        
+        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                currentTabPosition = tab?.position ?: 0
+                filterReminders()
+            }
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+        })
+    }
+    
+    private fun filterReminders() {
+        val filtered = when (currentTabPosition) {
+            0 -> allReminders.filter { !it.isCompleted }
+            1 -> allReminders.filter { it.isCompleted }
+            else -> allReminders
+        }
+        adapter.submitList(filtered)
+    }
+    
+    private fun toggleReminderStatus(reminder: ReminderEntity) {
+        val updated = reminder.copy(isCompleted = !reminder.isCompleted)
+        viewModel.updateReminder(updated)
+        
+        val message = if (updated.isCompleted) {
+            getString(R.string.mark_complete)
+        } else {
+            getString(R.string.mark_pending)
+        }
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun showEditDialog(reminder: ReminderEntity?) {
@@ -85,13 +133,31 @@ class ReminderListActivity : BaseActivity() {
         val textTime = dialog.findViewById<TextView>(R.id.text_time)
         val btnPickDate = dialog.findViewById<Button>(R.id.btn_pick_date)
         val btnPickTime = dialog.findViewById<Button>(R.id.btn_pick_time)
+        val spinnerRecurrence = dialog.findViewById<Spinner>(R.id.spinner_recurrence)
 
         selectedDateTime = Calendar.getInstance()
+        
+        // Setup recurrence spinner
+        val recurrenceLabels = listOf(
+            getString(R.string.recurrence_none),
+            getString(R.string.recurrence_daily),
+            getString(R.string.recurrence_weekly),
+            getString(R.string.recurrence_monthly)
+        )
+        val recurrenceAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, recurrenceLabels)
+        recurrenceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerRecurrence.adapter = recurrenceAdapter
 
         if (reminder != null) {
             title.text = getString(R.string.edit_reminder)
             editContent.setText(reminder.content)
             selectedDateTime.timeInMillis = reminder.reminderTime
+            
+            // Set recurrence spinner selection
+            val recurrenceIndex = recurrenceTypes.indexOf(reminder.recurrenceType)
+            if (recurrenceIndex >= 0) {
+                spinnerRecurrence.setSelection(recurrenceIndex)
+            }
         } else {
             title.text = getString(R.string.add_reminder)
             selectedDateTime.add(Calendar.HOUR_OF_DAY, 1)
@@ -123,6 +189,8 @@ class ReminderListActivity : BaseActivity() {
 
         dialog.findViewById<Button>(R.id.btn_save).setOnClickListener {
             val content = editContent.text.toString().trim()
+            val selectedRecurrenceIndex = spinnerRecurrence.selectedItemPosition
+            val recurrenceType = recurrenceTypes[selectedRecurrenceIndex]
 
             if (content.isEmpty()) {
                 Toast.makeText(this, getString(R.string.error_reminder_empty), Toast.LENGTH_SHORT).show()
@@ -132,7 +200,8 @@ class ReminderListActivity : BaseActivity() {
             if (reminder != null) {
                 val updated = reminder.copy(
                     content = content,
-                    reminderTime = selectedDateTime.timeInMillis
+                    reminderTime = selectedDateTime.timeInMillis,
+                    recurrenceType = recurrenceType
                 )
                 viewModel.updateReminder(updated)
                 ReminderScheduler.cancelReminder(this, reminder.id)
@@ -141,7 +210,8 @@ class ReminderListActivity : BaseActivity() {
             } else {
                 val newReminder = ReminderEntity(
                     content = content,
-                    reminderTime = selectedDateTime.timeInMillis
+                    reminderTime = selectedDateTime.timeInMillis,
+                    recurrenceType = recurrenceType
                 )
                 viewModel.insertReminder(newReminder) { id ->
                     ReminderScheduler.scheduleReminder(this, id.toInt(), content, selectedDateTime.timeInMillis)
@@ -178,10 +248,25 @@ class ReminderListActivity : BaseActivity() {
         )
 
         val fullDateFormat = java.text.SimpleDateFormat("EEEE, dd MMM yyyy • HH:mm", Locale.getDefault())
+        
+        // Get recurrence label
+        val recurrenceLabel = when (reminder.recurrenceType) {
+            "DAILY" -> getString(R.string.recurrence_daily)
+            "WEEKLY" -> getString(R.string.recurrence_weekly)
+            "MONTHLY" -> getString(R.string.recurrence_monthly)
+            else -> getString(R.string.recurrence_none)
+        }
+        
+        val statusText = if (reminder.isCompleted) getString(R.string.status_completed) else getString(R.string.status_active)
+        val subtitleText = if (reminder.recurrenceType != "NONE") {
+            "$statusText • $recurrenceLabel"
+        } else {
+            statusText
+        }
 
         dialog.findViewById<TextView>(R.id.text_type_label).text = getString(R.string.menu_reminder).uppercase()
         dialog.findViewById<TextView>(R.id.text_title).text = reminder.content
-        dialog.findViewById<TextView>(R.id.text_subtitle).text = if (reminder.isCompleted) getString(R.string.status_completed) else getString(R.string.status_active)
+        dialog.findViewById<TextView>(R.id.text_subtitle).text = subtitleText
         dialog.findViewById<TextView>(R.id.text_date).text = fullDateFormat.format(Date(reminder.reminderTime))
 
         dialog.findViewById<Button>(R.id.btn_close).setOnClickListener {

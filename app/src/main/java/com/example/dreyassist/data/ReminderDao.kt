@@ -18,11 +18,17 @@ interface ReminderDao {
     @Delete
     suspend fun delete(reminder: ReminderEntity)
 
-    @Query("SELECT * FROM reminder ORDER BY reminderTime ASC")
+    @Query("SELECT * FROM reminder ORDER BY createdAt DESC")
     fun getAll(): Flow<List<ReminderEntity>>
 
-    @Query("SELECT * FROM reminder WHERE isCompleted = 0 ORDER BY reminderTime ASC")
+    @Query("SELECT * FROM reminder WHERE isCompleted = 0 ORDER BY createdAt DESC")
     fun getActive(): Flow<List<ReminderEntity>>
+    
+    @Query("SELECT * FROM reminder WHERE isCompleted = 1 ORDER BY createdAt DESC")
+    fun getCompleted(): Flow<List<ReminderEntity>>
+    
+    @Query("SELECT COUNT(*) FROM reminder WHERE isCompleted = 0")
+    suspend fun getActiveCount(): Int
 
     @Query("SELECT * FROM reminder WHERE id = :id")
     suspend fun getById(id: Int): ReminderEntity?

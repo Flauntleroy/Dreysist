@@ -5,70 +5,40 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/bg_glass_card"
-    android:padding="16dp">
+    android:padding="14dp">
 
-    <!-- Header with time -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginBottom="12dp">
+        android:gravity="center_vertical">
 
         <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/logo_dreysist" />
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/logo_dreysist"
+            android:contentDescription="@string/app_name" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Dreysist"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
+            android:text="@string/app_name"
+            android:textColor="#B0B8C9"
+            android:textSize="12sp"
             android:textStyle="bold"
-            android:layout_marginStart="8dp" />
-
-        <TextView
-            android:id="@+id/text_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="--:--"
-            android:textColor="#8A94A8"
-            android:textSize="12sp" />
-    </LinearLayout>
-
-    <!-- Today's Spending -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Today's Spending"
-        android:textColor="#8A94A8"
-        android:textSize="11sp" />
-
-    <TextView
-        android:id="@+id/text_spending"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Rp 0"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="12dp" />
-
-    <!-- Stats Row -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+            android:layout_marginStart="6dp" />
 
         <LinearLayout
-            android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/bg_input_glass"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp">
 
             <TextView
                 android:id="@+id/text_reminders"
@@ -76,15 +46,62 @@
                 android:layout_height="wrap_content"
                 android:text="0"
                 android:textColor="#00D4FF"
-                android:textSize="18sp"
+                android:textSize="12sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Reminders"
+                android:text=" tasks"
                 android:textColor="#8A94A8"
                 android:textSize="10sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp">
+
+        <TextClock
+            android:id="@+id/text_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:format24Hour="HH:mm"
+            android:format12Hour="hh:mm"
+            android:textColor="#FFFFFF"
+            android:textSize="42sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="8dp">
+
+            <TextView
+                android:id="@+id/text_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sabtu"
+                android:textColor="#00D4FF"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/text_date_full"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4 Jan 2026"
+                android:textColor="#6B7280"
+                android:textSize="10sp" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -92,34 +109,46 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="end">
 
             <TextView
-                android:id="@+id/text_journals"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0"
-                android:textColor="#00D4FF"
-                android:textSize="18sp"
+                android:text="@string/today"
+                android:textColor="#6B7280"
+                android:textSize="9sp" />
+
+            <TextView
+                android:id="@+id/text_spending"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rp 0"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Journals"
-                android:textColor="#8A94A8"
-                android:textSize="10sp" />
         </LinearLayout>
+
     </LinearLayout>
 
-    <!-- Tap hint -->
     <TextView
+        android:id="@+id/text_quote"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Tap to speak"
-        android:textColor="#5A6380"
+        android:text="The unexamined life is not worth living."
+        android:textColor="#8A94A8"
         android:textSize="10sp"
-        android:gravity="center"
-        android:layout_marginTop="8dp" />
+        android:textStyle="italic"
+        android:maxLines="2"
+        android:ellipsize="end" />
+
+    <TextView
+        android:id="@+id/text_author"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="— Socrates"
+        android:textColor="#5A6380"
+        android:textSize="9sp"
+        android:layout_marginTop="2dp" />
 
 </LinearLayout>
