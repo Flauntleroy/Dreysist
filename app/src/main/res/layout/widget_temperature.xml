@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bg_widget_temperature"
+    android:paddingStart="12dp"
+    android:paddingEnd="12dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="8dp">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:src="@drawable/logo_dreysist"
+            android:contentDescription="@string/app_name" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textColor="#8A94A8"
+            android:textSize="8sp"
+            android:layout_marginStart="4dp" />
+
+        <ImageView
+            android:id="@+id/status_dot"
+            android:layout_width="5dp"
+            android:layout_height="5dp"
+            android:src="@drawable/bg_status_dot_offline"
+            android:contentDescription="Status" />
+
+    </LinearLayout>
+
+    <!-- Temperature - HERO -->
+    <TextView
+        android:id="@+id/text_temperature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="--°"
+        android:textColor="#FFFFFF"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        android:layout_marginTop="2dp" />
+
+    <!-- Humidity - Secondary -->
+    <TextView
+        android:id="@+id/text_humidity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Humidity --%"
+        android:textColor="#B3FFFFFF"
+        android:textSize="11sp" />
+
+    <!-- Condition -->
+    <TextView
+        android:id="@+id/text_condition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="--"
+        android:textColor="#00D4FF"
+        android:textSize="9sp"
+        android:textStyle="italic"
+        android:layout_marginTop="2dp" />
+
+    <!-- Spacer -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical" />
+
+    <!-- Time - Tertiary -->
+    <TextView
+        android:id="@+id/text_last_update"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="--:--"
+        android:textColor="#80FFFFFF"
+        android:textSize="9sp" />
+
+</LinearLayout>

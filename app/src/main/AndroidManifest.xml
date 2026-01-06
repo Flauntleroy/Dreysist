@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".DreyAssistApp"
@@ -100,6 +101,19 @@
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_info_large" />
+        </receiver>
+
+        <!-- Temperature Monitoring Widget -->
+        <receiver
+            android:name=".widget.TemperatureWidget"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.example.dreyassist.ACTION_TEMPERATURE_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info_temperature" />
         </receiver>
 
         <activity
